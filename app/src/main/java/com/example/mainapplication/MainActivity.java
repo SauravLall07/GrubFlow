@@ -1,5 +1,6 @@
 package com.example.mainapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
                         if(json.getBoolean("success")){
                             Toast.makeText(this, "Login Successful!! Welcome" + json.getString("name"), Toast.LENGTH_LONG).show();
                             //add code to redirect the page here
+                            Intent intent = new Intent(MainActivity.this, StaffActivity.class);
+                            startActivity(intent);
 
                         }else{
                             Toast.makeText(this, json.getString("message"), Toast.LENGTH_LONG).show();
