@@ -12,6 +12,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.OutputStream;
@@ -70,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 input.close();
 
-                JSONObject json = new JSONObject(response.toString());
+                JSONArray jsonArray = new JSONArray(response.toString());
+                JSONObject json = jsonArray.getJSONObject(0);
                 runOnUiThread(() -> {
                     try{
                         if(json.getBoolean("success")){
