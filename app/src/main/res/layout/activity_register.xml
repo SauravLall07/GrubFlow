@@ -126,19 +126,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Role (staff or customer)"
                 app:boxStrokeColor="@color/burgundy"
                 app:layout_constraintTop_toBottomOf="@id/tilPassword"
                 app:startIconDrawable="@drawable/ic_role"
                 app:startIconTint="@color/burgundy">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/etRole"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="text"
-                    android:textColor="@color/text_primary" />
+                    android:layout_height="match_parent"
+                    android:hint="Role (staff or customer)"
+                    android:inputType="none"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:dropDownHeight="wrap_content"
+                    />
+
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Register Button -->

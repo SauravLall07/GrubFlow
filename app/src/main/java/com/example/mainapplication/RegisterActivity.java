@@ -3,10 +3,13 @@ package com.example.mainapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AutoCompleteTextView;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -20,19 +23,22 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import okhttp3.Call;
+import okhttp3.OkHttpClient;
 import okhttp3.Callback;
 import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
+
 
 public class RegisterActivity extends AppCompatActivity {
 
     TextView returnToLogin;
-    EditText etName, etEmail, etPassword, etRole;
+    EditText etName, etEmail, etPassword;
+    AutoCompleteTextView etRole;
     Button btnRegister;
-    OkHttpClient client = new OkHttpClient();
+    OkHttpClient client;
     String url = "https://lamp.ms.wits.ac.za/home/s2801261/register.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,13 @@ public class RegisterActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        client = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
 
         returnToLogin = findViewById(R.id.tvLogin);
 
@@ -60,6 +73,13 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etRole = findViewById(R.id.etRole);
 
+        String[] roles = {"Customer", "Staff"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
+        etRole.setAdapter(adapter);
+
+
+// Optional: show dropdown when focused
+        etRole.setOnClickListener(v -> etRole.showDropDown());
         btnRegister = findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener(v -> registerUser());
