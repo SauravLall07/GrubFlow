@@ -84,10 +84,11 @@ public class SignInActivity extends AppCompatActivity {
 
                 JSONArray jsonArray = new JSONArray(response.toString());
                 JSONObject json = jsonArray.getJSONObject(0);
+
                 runOnUiThread(() -> {
                     try{
                         if(json.getBoolean("success")){
-                            Toast.makeText(this, "Login Successful!! Welcome" + json.getString("name"), Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "Login Successful!! Welcome " + json.getString("name"), Toast.LENGTH_LONG).show();
 
                             Intent intent = new Intent(SignInActivity.this, StaffActivity.class);
                             startActivity(intent);
