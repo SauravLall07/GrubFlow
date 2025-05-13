@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
             try{
                 URL url = new URL("https://lamp.ms.wits.ac.za/home/s2801261/login.php");
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
-                //conn.getRequestMethod();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
                 conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     try{
                         if(json.getBoolean("success")){
                             Toast.makeText(this, "Login Successful!! Welcome" + json.getString("name"), Toast.LENGTH_LONG).show();
-                            //add code to redirect the page here
+
                             Intent intent = new Intent(MainActivity.this, StaffActivity.class);
                             startActivity(intent);
 
