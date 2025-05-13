@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/abril_fatface"
         android:text="Create Account"
         android:textColor="@color/white"
         android:textSize="24sp"
@@ -70,7 +70,7 @@
                     android:id="@+id/etName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="@font/abril_fatface"
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,7 +91,7 @@
                     android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="@font/abril_fatface"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -114,7 +114,7 @@
                     android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat"
+                    android:fontFamily="@font/abril_fatface"
                     android:inputType="textPassword"
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -135,13 +135,13 @@
                     android:id="@+id/etRole"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:hint="Role (staff or customer)"
-                    android:inputType="none"
-                    android:focusable="false"
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:dropDownHeight="wrap_content"
-                    />
+                    android:focusable="false"
+                    android:fontFamily="@font/abril_fatface"
+                    android:hint="Role (staff or customer)"
+                    android:inputType="none" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -152,13 +152,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="24dp"
-                android:fontFamily="@font/montserrat_bold"
+                android:fontFamily="@font/abril_fatface"
                 android:text="Register"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:backgroundTint="@color/burgundy"
                 app:cornerRadius="12dp"
-                app:layout_constraintTop_toBottomOf="@id/tilRole" />
+                app:layout_constraintTop_toBottomOf="@id/tilRole"
+                tools:layout_editor_absoluteX="24dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -177,7 +178,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
+            android:fontFamily="@font/abril_fatface"
             android:text="Already have an account?"
             android:textColor="@color/white" />
 
@@ -185,7 +186,7 @@
             android:id="@+id/tvLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/abril_fatface"
             android:text=" Login"
             android:textColor="@color/accent" />
     </LinearLayout>
