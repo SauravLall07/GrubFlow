@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.content.Intent;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -24,7 +23,7 @@ import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class MainActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
 
     Button loginButton;
     EditText emailField, passwordField;
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+                Intent intent = new Intent(SignInActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
@@ -90,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                         if(json.getBoolean("success")){
                             Toast.makeText(this, "Login Successful!! Welcome" + json.getString("name"), Toast.LENGTH_LONG).show();
 
-                            Intent intent = new Intent(MainActivity.this, StaffActivity.class);
+                            Intent intent = new Intent(SignInActivity.this, StaffActivity.class);
                             startActivity(intent);
 
                         }else{
