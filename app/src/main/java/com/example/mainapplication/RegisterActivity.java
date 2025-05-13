@@ -73,7 +73,7 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etRole = findViewById(R.id.etRole);
 
-        String[] roles = {"Customer", "Staff"};
+        String[] roles = {"customer", "staff"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
         etRole.setAdapter(adapter);
 
@@ -112,6 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                assert response.body() != null;
                 String responseString = response.body().string();
 
                 runOnUiThread(() -> {
