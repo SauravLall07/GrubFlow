@@ -90,9 +90,17 @@ public class SignInActivity extends AppCompatActivity {
                         if(json.getBoolean("success")){
                             Toast.makeText(this, "Login Successful!! Welcome " + json.getString("name"), Toast.LENGTH_LONG).show();
 
-                            Intent intent = new Intent(SignInActivity.this, StaffActivity.class);
+                            String name = json.getString("name");
+                            String role = json.getString("role");
+                            Intent intent = null;
+                            if(role.equals("staff")){
+                                intent = new Intent(SignInActivity.this, StaffActivity.class);
+                            }
+                            //Note that we will need to change this cline once we have made a customer activity
+                            else if(role.equals("customer")){
+                                intent = new Intent(SignInActivity.this, StaffActivity.class);
+                            }
                             startActivity(intent);
-
                         }else{
                             Toast.makeText(this, json.getString("message"), Toast.LENGTH_LONG).show();
                         }

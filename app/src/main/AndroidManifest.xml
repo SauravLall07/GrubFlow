@@ -18,8 +18,12 @@
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity
+            android:name=".StaffActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignInActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
