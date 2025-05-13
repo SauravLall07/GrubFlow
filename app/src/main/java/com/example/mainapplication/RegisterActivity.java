@@ -112,21 +112,29 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
                 String responseString = response.body().string();
 
                 runOnUiThread(() -> {
-
                     try {
-                        JSONObject json = new JSONObject(responseString);
+                        org.json.JSONArray jsonArray = new org.json.JSONArray(responseString);
+                        JSONObject json = jsonArray.getJSONObject(0);
+
                         boolean success = json.getBoolean("success");
                         String message = json.getString("message");
 
+                        Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_LONG).show();
+
+                        if (success) {
+                            startActivity(new Intent(RegisterActivity.this, SignInActivity.class));
+                            finish();
+                        }
+
                     } catch (Exception e) {
-                        Toast.makeText(RegisterActivity.this, "Response error", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "Response parsing error", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
+
         });
 
 
