@@ -4,17 +4,36 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class RegisterActivity extends AppCompatActivity {
 
     TextView returnToLogin;
+    EditText etName, etEmail, etPassword, etRole;
+    Button btnRegister;
+    OkHttpClient client = new OkHttpClient();
+    String url = "https://lamp.ms.wits.ac.za/home/s2801261/register.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,5 +54,63 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        etName = findViewById(R.id.etName);
+        etEmail = findViewById(R.id.etEmail);
+        etPassword = findViewById(R.id.etPassword);
+        etRole = findViewById(R.id.etRole);
+
+        btnRegister = findViewById(R.id.btnRegister);
+
+        btnRegister.setOnClickListener(v -> registerUser());
+    }
+
+    private void registerUser(){
+
+        String name = etName.getText().toString().trim();
+        String email = etEmail.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
+        String role = etRole.getText().toString().trim();
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("name", name)
+                .add("email", email)
+                .add("password", password)
+                .add("role", role)
+                .build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() -> Toast.makeText(RegisterActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+
+                String responseString = response.body().string();
+
+                runOnUiThread(() -> {
+
+                    try {
+                        JSONObject json = new JSONObject(responseString);
+                        boolean success = json.getBoolean("success");
+                        String message = json.getString("message");
+
+                    } catch (Exception e) {
+                        Toast.makeText(RegisterActivity.this, "Response error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
+
+
+
     }
 }
