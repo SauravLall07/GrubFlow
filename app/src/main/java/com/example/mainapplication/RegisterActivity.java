@@ -31,7 +31,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 
-
 public class RegisterActivity extends AppCompatActivity {
 
     TextView returnToLogin;
@@ -90,7 +89,7 @@ public class RegisterActivity extends AppCompatActivity {
         String name = etName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        String role = etRole.getText().toString().trim();
+        String role = etRole.getText().toString().trim().toLowerCase();
 
         RequestBody formBody = new FormBody.Builder()
                 .add("name", name)
