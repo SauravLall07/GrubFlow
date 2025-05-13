@@ -190,14 +190,6 @@
                     android:layout_weight="1"
                     android:background="@color/divider" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="OR"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
 
                 <View
                     android:layout_width="0dp"
@@ -205,78 +197,9 @@
                     android:layout_weight="1"
                     android:background="@color/divider" />
             </LinearLayout>
-
-            <!-- Social Login Buttons -->
-            <LinearLayout
-                android:id="@+id/llSocialLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@+id/llDivider">
-
-                <!-- Google Login -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cvGoogle"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="2dp"
-                    app:strokeColor="@color/divider"
-                    app:strokeWidth="1dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_google"
-                        android:contentDescription="Google Login" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Facebook Login -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cvFacebook"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="2dp"
-                    app:strokeColor="@color/divider"
-                    app:strokeWidth="1dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_facebook"
-                        android:contentDescription="Facebook Login" />
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Apple Login -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cvApple"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="24dp"
-                    app:cardElevation="2dp"
-                    app:strokeColor="@color/divider"
-                    app:strokeWidth="1dp">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_apple"
-                        android:contentDescription="Apple Login" />
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Sign Up Text -->
     <LinearLayout
         android:id="@+id/llSignUp"
         android:layout_width="wrap_content"
@@ -307,42 +230,6 @@
 
     </LinearLayout>
 
-    <!-- Animated Food Icons (would be animated in code) -->
-    <ImageView
-        android:id="@+id/ivFoodIcon1"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginBottom="48dp"
-        android:alpha="0.6"
-        android:src="@drawable/ic_food1"
-        android:contentDescription="Food Icon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
-
-    <ImageView
-        android:id="@+id/ivFoodIcon2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="80dp"
-        android:alpha="0.5"
-        android:src="@drawable/ic_food2"
-        android:contentDescription="Food Icon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/ivFoodIcon3"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginBottom="120dp"
-        android:alpha="0.4"
-        android:src="@drawable/ic_food3"
-        android:contentDescription="Food Icon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
