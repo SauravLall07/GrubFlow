@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/abril_fatface"
         android:letterSpacing="0.1"
         android:text="Staff Dashboard"
         android:textColor="@color/white"
@@ -67,6 +67,7 @@
                     android:id="@+id/etCustomerName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/abril_fatface"
                     android:inputType="textPersonName"
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -87,6 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
+                    android:fontFamily="@font/abril_fatface"
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,6 +108,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
+                    android:fontFamily="@font/abril_fatface"
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -124,9 +127,9 @@
                     android:id="@+id/autoStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Pending"
                     android:inputType="none"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="@font/abril_fatface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Average Rating -->
@@ -135,6 +138,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/abril_fatface"
                 android:text="Average Rating: 4.3"
                 android:textColor="@color/burgundy"
                 android:textSize="16sp"
@@ -147,11 +151,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:fontFamily="@font/abril_fatface"
                 android:text="SUBMIT ORDER"
                 android:textSize="16sp"
                 app:backgroundTint="@color/burgundy"
                 app:cornerRadius="12dp"
-                app:layout_constraintTop_toBottomOf="@id/tvAverageRating" />
+                app:layout_constraintTop_toBottomOf="@id/tvAverageRating"
+                tools:layout_editor_absoluteX="24dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

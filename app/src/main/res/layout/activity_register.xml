@@ -140,7 +140,7 @@
                     android:dropDownHeight="wrap_content"
                     android:focusable="false"
                     android:fontFamily="@font/abril_fatface"
-                    android:hint="Role (staff or customer)"
+                    android:hint="Role"
                     android:inputType="none" />
 
 
