@@ -98,7 +98,7 @@ public class SignInActivity extends AppCompatActivity {
                             }
                             //Note that we will need to change this cline once we have made a customer activity
                             else if(role.equals("customer")){
-                                intent = new Intent(SignInActivity.this, StaffActivity.class);
+                                intent = new Intent(SignInActivity.this, CustomerActivity.class);
                             }
                             startActivity(intent);
                         }else{
