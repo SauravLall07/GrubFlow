@@ -18,6 +18,7 @@
         <!-- SplashActivity is now the launcher -->
         <activity
             android:name=".SplashActivity"
+            android:theme="@style/Theme.MainApplication.Splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

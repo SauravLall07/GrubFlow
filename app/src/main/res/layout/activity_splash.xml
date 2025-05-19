@@ -2,27 +2,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:gravity="center">
+    android:background="@color/dark_grey">
 
+    <!-- Centered Logo -->
     <ImageView
         android:id="@+id/splash_logo"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@drawable/ic_email"
         android:contentDescription="splash"
-        android:layout_centerHorizontal="true"
-        android:scaleType="fitCenter"/>
+        android:layout_centerInParent="true"
+        android:scaleType="fitCenter" />
 
+    <!-- Footer Text at Bottom -->
     <TextView
+        android:id="@+id/splash_footer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/splash_logo"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
         android:fontFamily="@font/fondamento"
         android:gravity="center"
-        android:text="app name"
+        android:text="Powered by SchemeShifters"
         android:textColor="@color/burgundy"
-        android:textSize="40sp" />
+        android:textSize="20sp" />
 </RelativeLayout>

@@ -10,4 +10,13 @@
 
     <style name="Theme.MainApplication" parent="Base.Theme.MainApplication" />
 
+    <!-- SPLASH THEME -->
+    <style name="Theme.MainApplication.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/dark_grey</item>
+        <item name="android:statusBarColor">@color/dark_grey</item>
+        <item name="android:navigationBarColor">@color/dark_grey</item>
+        <item name="android:windowLightStatusBar">false</item> <!-- light icons for dark background -->
+    </style>
+
+
 </resources>
