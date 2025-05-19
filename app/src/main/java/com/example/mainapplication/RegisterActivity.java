@@ -13,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -90,6 +91,37 @@ public class RegisterActivity extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String role = etRole.getText().toString().trim().toLowerCase();
+
+        // Validate email domain suffix
+        String[] validDomains = {"@gmail.com", "@yahoo.com", "@wits.ac.za", "@hotmail.com", "@outlook.com", "@icloud.com"};
+        boolean validEmailSuffix = false;
+        for (String domain : validDomains) {
+            if (email.endsWith(domain)) {
+                validEmailSuffix = true;
+                break;
+            }
+        }
+
+        if (!validEmailSuffix) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Invalid Password")
+                    .setMessage("Email must end with a valid domain")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
+
+        // 🔒 PASSWORD validation
+        String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
+
+        if (!password.matches(passwordPattern)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Invalid Password")
+                    .setMessage("Password must be at least 8 characters and include:\n- 1 lowercase letter\n- 1 uppercase letter\n- 1 number\n- 1 special character")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
 
         RequestBody formBody = new FormBody.Builder()
                 .add("name", name)

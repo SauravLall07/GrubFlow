@@ -3,7 +3,11 @@
     <style name="Base.Theme.MainApplication" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- Add this line to change cursor color to grey -->
+        <item name="colorControlActivated">@color/grey</item>
     </style>
 
     <style name="Theme.MainApplication" parent="Base.Theme.MainApplication" />
+
 </resources>

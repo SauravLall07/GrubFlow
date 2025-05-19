@@ -69,7 +69,8 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/black_ops_one"
                     android:inputType="textPersonName"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/text_primary"
+                    android:textCursorDrawable="@drawable/grey_cursor"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Staff Name -->
