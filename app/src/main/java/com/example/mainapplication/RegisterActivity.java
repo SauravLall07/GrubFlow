@@ -93,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
         String role = etRole.getText().toString().trim().toLowerCase();
 
         // Validate email domain suffix
-        String[] validDomains = {"@gmail.com", "@yahoo.com", "@wits.ac.za", "@hotmail.com", "@outlook.com", "@icloud.com"};
+        String[] validDomains = {"@gmail.com", "@yahoo.com", "@wits.ac.za", "@hotmail.com", "@outlook.com", "@icloud.com", "@students.wits.ac.za"};
         boolean validEmailSuffix = false;
         for (String domain : validDomains) {
             if (email.endsWith(domain)) {
@@ -104,7 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         if (!validEmailSuffix) {
             new AlertDialog.Builder(this)
-                    .setTitle("Invalid Password")
+                    .setTitle("Invalid Email")
                     .setMessage("Email must end with a valid domain")
                     .setPositiveButton("OK", null)
                     .show();
