@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_gradient_background"
+    android:background="@drawable/wallpaper"
     tools:context=".StaffActivity">
 
     <ImageView
@@ -15,12 +15,11 @@
         android:layout_marginTop="48dp"
         android:src="@drawable/restaurant_logo"
         android:contentDescription="Restaurant Logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:elevation="8dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Title  -->
     <TextView
         android:id="@+id/tvOrderHeader"
         android:layout_width="wrap_content"
@@ -31,37 +30,40 @@
         android:text="Staff Dashboard"
         android:textColor="@color/white"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivLogo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Order Form Card -->
-    <androidx.cardview.widget.CardView
+    <!-- Translucent Order Form Card -->
+    <!-- Card Container for Order Form (just like Register Card) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cardOrderForm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
-        app:cardBackgroundColor="@android:color/white"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/rounded_translucent_bg"
+        android:padding="24dp"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderHeader"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvOrderHeader">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="24dp">
+            android:background="@drawable/rounded_translucent_bg"
+            android:orientation="vertical"
+            android:padding="24dp"
+            tools:ignore="MissingConstraints">
 
-            <!-- Customer Name -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilCustomerName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Customer Name"
-                app:boxStrokeColor="@color/burgundy"
-                app:layout_constraintTop_toTopOf="parent">
+                app:boxStrokeColor="@color/burgundy">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etCustomerName"
@@ -70,10 +72,9 @@
                     android:fontFamily="@font/black_ops_one"
                     android:inputType="textPersonName"
                     android:textColor="@color/text_primary"
-                    android:textCursorDrawable="@drawable/grey_cursor"/>
+                    android:textCursorDrawable="@drawable/grey_cursor" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Staff Name -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilStaffName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -81,8 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Staff Member"
-                app:boxStrokeColor="@color/burgundy"
-                app:layout_constraintTop_toBottomOf="@id/tilCustomerName">
+                app:boxStrokeColor="@color/burgundy">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etStaffName"
@@ -93,7 +93,6 @@
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Time -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilTime"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -101,8 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Time"
-                app:boxStrokeColor="@color/burgundy"
-                app:layout_constraintTop_toBottomOf="@id/tilStaffName">
+                app:boxStrokeColor="@color/burgundy">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etTime"
@@ -113,7 +111,6 @@
                     android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Status Dropdown -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilStatus"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -121,8 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="Order Status"
-                app:boxStrokeColor="@color/burgundy"
-                app:layout_constraintTop_toBottomOf="@id/tilTime">
+                app:boxStrokeColor="@color/burgundy">
 
                 <AutoCompleteTextView
                     android:id="@+id/autoStatus"
@@ -130,10 +126,10 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/black_ops_one"
                     android:inputType="none"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/text_primary"
+                    tools:ignore="TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Average Rating -->
             <TextView
                 android:id="@+id/tvAverageRating"
                 android:layout_width="wrap_content"
@@ -142,11 +138,8 @@
                 android:fontFamily="@font/black_ops_one"
                 android:text="Average Rating: 4.3"
                 android:textColor="@color/burgundy"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tilStatus" />
+                android:textSize="16sp" />
 
-            <!-- Submit Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSubmitOrder"
                 android:layout_width="match_parent"
@@ -156,10 +149,9 @@
                 android:text="SUBMIT ORDER"
                 android:textSize="16sp"
                 app:backgroundTint="@color/burgundy"
-                app:cornerRadius="12dp"
-                app:layout_constraintTop_toBottomOf="@id/tvAverageRating"
-                tools:layout_editor_absoluteX="24dp" />
+                app:cornerRadius="12dp" />
+        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
