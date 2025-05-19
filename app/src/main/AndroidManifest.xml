@@ -14,8 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MainApplication"
         tools:targetApi="31">
+
+        <!-- SplashActivity is now the launcher -->
         <activity
-            android:name=".CustomerActivity"
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SignInActivity"
             android:exported="false" />
         <activity
             android:name=".RegisterActivity"
@@ -24,14 +35,8 @@
             android:name=".StaffActivity"
             android:exported="false" />
         <activity
-            android:name=".SignInActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".CustomerActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
