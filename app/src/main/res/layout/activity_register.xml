@@ -5,7 +5,7 @@
     android:id="@+id/tvRegister"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wallpaper"
+    android:background="@drawable/wallpaper4"
     tools:context=".RegisterActivity">
 
     <!-- App Logo -->
@@ -13,26 +13,26 @@
         android:id="@+id/ivLogo"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         android:contentDescription="App Logo"
         android:src="@drawable/restaurant_logo"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Title -->
     <TextView
         android:id="@+id/tvRegisterTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="15dp"
         android:fontFamily="@font/black_ops_one"
         android:text="Create Account"
         android:textColor="@color/white"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivLogo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ivLogo" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Card Container -->
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -40,13 +40,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginTop="5dp"
         android:background="@drawable/rounded_translucent_bg"
         android:padding="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRegisterTitle"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvRegisterTitle">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <!-- Name -->
         <com.google.android.material.textfield.TextInputLayout
@@ -57,9 +57,9 @@
             android:hint="Full Name"
             app:boxStrokeColor="@color/burgundy"
             app:hintTextColor="@color/burgundy"
-            app:layout_constraintTop_toTopOf="parent"
             app:startIconDrawable="@drawable/ic_person"
-            app:startIconTint="@color/burgundy">
+            app:startIconTint="@color/burgundy"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etName"
@@ -80,17 +80,16 @@
             android:hint="Email"
             app:boxStrokeColor="@color/burgundy"
             app:hintTextColor="@color/burgundy"
-            app:layout_constraintTop_toBottomOf="@id/tilName"
             app:startIconDrawable="@drawable/ic_email"
-            android:textCursorDrawable="@drawable/grey_cursor"
-            app:startIconTint="@color/burgundy">
+            app:startIconTint="@color/burgundy"
+            app:layout_constraintTop_toBottomOf="@id/tilName">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/black_ops_one"
                 android:inputType="textEmailAddress"
+                android:fontFamily="@font/black_ops_one"
                 android:textColor="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,20 +100,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Password"
+            android:hint="Enter Password"
             app:boxStrokeColor="@color/burgundy"
             app:hintTextColor="@color/burgundy"
             app:endIconMode="password_toggle"
-            app:layout_constraintTop_toBottomOf="@id/tilEmail"
             app:startIconDrawable="@drawable/ic_lock"
-            app:startIconTint="@color/burgundy">
+            app:startIconTint="@color/burgundy"
+            app:layout_constraintTop_toBottomOf="@id/tilEmail">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/black_ops_one"
                 android:inputType="textPassword"
+                android:fontFamily="@font/black_ops_one"
+                android:textColor="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Confirm Password -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilConfirmPassword"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="Confirm Password"
+            app:boxStrokeColor="@color/burgundy"
+            app:hintTextColor="@color/burgundy"
+            app:endIconMode="password_toggle"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:startIconTint="@color/burgundy"
+            app:layout_constraintTop_toBottomOf="@id/tilPassword">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:fontFamily="@font/black_ops_one"
                 android:textColor="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -127,9 +150,9 @@
             android:layout_marginTop="16dp"
             app:boxStrokeColor="@color/burgundy"
             app:hintTextColor="@color/burgundy"
-            app:layout_constraintTop_toBottomOf="@id/tilPassword"
             app:startIconDrawable="@drawable/ic_role"
-            app:startIconTint="@color/burgundy">
+            app:startIconTint="@color/burgundy"
+            app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword">
 
             <AutoCompleteTextView
                 android:id="@+id/etRole"
@@ -139,10 +162,10 @@
                 android:cursorVisible="false"
                 android:dropDownHeight="wrap_content"
                 android:focusable="false"
-                android:fontFamily="@font/black_ops_one"
                 android:hint="Role"
-                android:textColor="@color/white"
-                android:inputType="none" />
+                android:inputType="none"
+                android:fontFamily="@font/black_ops_one"
+                android:textColor="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Register Button -->
@@ -150,44 +173,64 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginTop="24dp"
-            android:fontFamily="@font/black_ops_one"
+            android:layout_marginTop="15dp"
             android:text="Register"
             android:textColor="@color/white"
             android:textSize="16sp"
+            android:fontFamily="@font/black_ops_one"
             app:backgroundTint="@color/burgundy"
             app:cornerRadius="12dp"
             app:layout_constraintTop_toBottomOf="@id/tilRole" />
+
+        <!-- Divider (Now correctly above login prompt) -->
+        <LinearLayout
+            android:id="@+id/llDivider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/btnRegister">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/divider" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="@color/divider" />
+        </LinearLayout>
+
+        <!-- Login Redirect (Moved below divider) -->
+        <LinearLayout
+            android:id="@+id/llLoginRedirect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/llDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Already have an account?"
+                android:textColor="@color/white"
+                android:fontFamily="@font/black_ops_one" />
+
+            <TextView
+                android:id="@+id/tvLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Login"
+                android:textColor="@color/accent"
+                android:fontFamily="@font/black_ops_one" />
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <!-- Back to Login -->
-    <LinearLayout
-        android:id="@+id/llLoginRedirect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardRegister">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/black_ops_one"
-            android:text="Already have an account?"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:id="@+id/tvLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/black_ops_one"
-            android:text=" Login"
-            android:textColor="@color/accent" />
-    </LinearLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
