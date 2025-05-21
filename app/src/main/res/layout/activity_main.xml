@@ -11,13 +11,15 @@
     <!-- App Logo -->
     <ImageView
         android:id="@+id/ivLogo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="72dp"
-        android:src="@drawable/logo"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="40dp"
+        android:background="#00FFFFFF"
+        android:backgroundTint="#00FFFFFF"
         android:contentDescription="Restaurant Logo"
         android:elevation="10dp"
         android:shadowColor="#88000000"
+        android:src="@drawable/logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
