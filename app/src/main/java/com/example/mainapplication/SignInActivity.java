@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import android.content.SharedPreferences;
+import android.widget.CheckBox;
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,6 +55,17 @@ public class SignInActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        CheckBox rememberMe = findViewById(R.id.cbRememberMe);
+        SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+
+// Autofill if saved
+        if (preferences.getBoolean("rememberMe", false)) {
+            emailField.setText(preferences.getString("email", ""));
+            passwordField.setText(preferences.getString("password", ""));
+            rememberMe.setChecked(true);
+        }
+
 
     }
 
@@ -100,6 +114,16 @@ public class SignInActivity extends AppCompatActivity {
                             else if(role.equals("customer")){
                                 intent = new Intent(SignInActivity.this, CustomerActivity.class);
                             }
+                            SharedPreferences.Editor editor = getSharedPreferences("loginPrefs", MODE_PRIVATE).edit();
+                            if (((CheckBox)findViewById(R.id.cbRememberMe)).isChecked()) {
+                                editor.putBoolean("rememberMe", true);
+                                editor.putString("email", email);
+                                editor.putString("password", password);
+                            } else {
+                                editor.clear();
+                            }
+                            editor.apply();
+
                             startActivity(intent);
                         }else{
                             Toast.makeText(this, json.getString("message"), Toast.LENGTH_LONG).show();
