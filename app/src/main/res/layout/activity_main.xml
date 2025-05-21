@@ -14,7 +14,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginTop="72dp"
-        android:src="@drawable/restaurant_logo"
+        android:src="@drawable/logo"
         android:contentDescription="Restaurant Logo"
         android:elevation="10dp"
         android:shadowColor="#88000000"
