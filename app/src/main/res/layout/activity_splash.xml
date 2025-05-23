@@ -9,7 +9,7 @@
         android:id="@+id/splash_logo"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo_transparent"
         android:contentDescription="splash"
         android:layout_centerInParent="true"
         android:scaleType="fitCenter" />
