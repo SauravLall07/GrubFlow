@@ -2,14 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/orderHistoryLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wallpaper"
-    tools:context=".CustomerActivity">
+    android:background="@drawable/wallpaper4"
+    android:padding="16dp">
 
-    <!-- Logo on top -->
     <ImageView
         android:id="@+id/ivLogo"
         android:layout_width="120dp"
@@ -32,40 +30,29 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:fontFamily="@font/black_ops_one"
-        android:text="My Orders"
+        android:text="Order History"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintTop_toBottomOf="@id/ivLogo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView below header -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvOrders"
+    <!-- Orders display or message -->
+    <TextView
+        android:id="@+id/tvOrderHistory"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="50dp"
-        android:clipToPadding="false"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvHeader"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvRestaurantRatings" />
-
-    <!-- Ratings TextView at bottom -->
-    <TextView
-        android:id="@+id/tvRestaurantRatings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/rounded_translucent_bg"
+        android:text="Loading orders..."
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
         android:fontFamily="@font/black_ops_one"
-        android:text="Restaurant Ratings"
-        android:textColor="@color/white"
-        android:textSize="18sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
