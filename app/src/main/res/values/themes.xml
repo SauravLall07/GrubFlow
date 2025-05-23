@@ -1,15 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base theme -->
     <style name="Base.Theme.MainApplication" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-
         <item name="colorControlActivated">@color/grey</item>
-
-        <!-- Add these to control status bar color and icon style app-wide -->
         <item name="android:statusBarColor">@color/dark_grey</item>
-        <item name="android:windowLightStatusBar">false</item> <!-- light icons -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
+    <!-- App theme -->
     <style name="Theme.MainApplication" parent="Base.Theme.MainApplication">
         <item name="android:windowBackground">@color/dark_grey</item>
         <item name="android:statusBarColor">@color/dark_grey</item>
@@ -17,5 +14,12 @@
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
-
+    <!-- Splash screen only -->
+    <style name="Theme.MainApplication.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/dark_grey</item>
+        <item name="android:statusBarColor">@color/dark_grey</item>
+        <item name="android:navigationBarColor">@color/dark_grey</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowIsTranslucent">true</item> <!-- 👈 Here only -->
+    </style>
 </resources>
