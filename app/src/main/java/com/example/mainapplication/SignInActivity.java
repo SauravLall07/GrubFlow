@@ -109,6 +109,7 @@ public class SignInActivity extends AppCompatActivity {
                             Intent intent = null;
                             if(role.equals("staff")){
                                 intent = new Intent(SignInActivity.this, StaffActivity.class);
+                                intent.putExtra("staff_name", name);
                             }
                             //Note that we will need to change this cline once we have made a customer activity
                             else if(role.equals("customer")){
