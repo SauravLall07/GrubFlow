@@ -86,45 +86,56 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(v -> registerUser());
     }
 
-    private void registerUser(){
-
+    private void registerUser() {
         String name = etName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
         String role = etRole.getText().toString().trim().toLowerCase();
 
+        boolean hasError = false;
+
+        // Name validation
         if (name.isEmpty()) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Invalid Name")
-                    .setMessage("Full name cannot be empty.")
-                    .setPositiveButton("OK", null)
-                    .show();
-            return;
+            etName.setError("Full name is required");
+            hasError = true;
         }
 
-        // Validate email domain suffix
-        String[] validDomains = {"@gmail.com", "@yahoo.com", "@wits.ac.za", "@hotmail.com", "@outlook.com", "@icloud.com", "@students.wits.ac.za"};
-        boolean validEmailSuffix = false;
-        for (String domain : validDomains) {
-            if (email.endsWith(domain)) {
-                validEmailSuffix = true;
-                break;
+        // Email validation
+        if (email.isEmpty()) {
+            etEmail.setError("Email is required");
+            hasError = true;
+        } else {
+            String[] validDomains = {
+                    "@gmail.com", "@yahoo.com", "@wits.ac.za",
+                    "@hotmail.com", "@outlook.com", "@icloud.com", "@students.wits.ac.za"
+            };
+            boolean validEmailSuffix = false;
+            for (String domain : validDomains) {
+                if (email.endsWith(domain)) {
+                    validEmailSuffix = true;
+                    break;
+                }
+            }
+            if (!validEmailSuffix) {
+                etEmail.setError("Email must end with a valid domain (e.g. @gmail.com)");
+                hasError = true;
             }
         }
 
-        if (!validEmailSuffix) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Invalid Email")
-                    .setMessage("Email must end with a valid domain")
-                    .setPositiveButton("OK", null)
-                    .show();
+        // Check if password is empty
+        if (password.isEmpty()) {
+            etPassword.setError("Password is required");
+            hasError = true;
+        }
+
+        // Return early if name, email, or role OR empty password has errors
+        if (hasError) {
             return;
         }
 
-        // 🔒 PASSWORD validation
+        // Password strength validation (only if not empty)
         String passwordPattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}$";
-
         if (!password.matches(passwordPattern)) {
             new AlertDialog.Builder(this)
                     .setTitle("Invalid Password")
@@ -134,6 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+
         if (!password.equals(confirmPassword)) {
             new AlertDialog.Builder(this)
                     .setTitle("Passwords Do Not Match")
@@ -142,7 +154,6 @@ public class RegisterActivity extends AppCompatActivity {
                     .show();
             return;
         }
-
 
         RequestBody formBody = new FormBody.Builder()
                 .add("name", name)
@@ -187,11 +198,7 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
             }
-
         });
-
-
-
-
     }
+
 }

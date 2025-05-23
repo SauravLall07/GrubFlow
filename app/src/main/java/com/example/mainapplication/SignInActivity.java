@@ -69,14 +69,29 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
-    public void loginUser(){
+    public void loginUser() {
+        String email = emailField.getText().toString().trim();
+        String password = passwordField.getText().toString().trim();
 
-        String email = emailField.getText().toString();
-        String password = passwordField.getText().toString();
+        // Field validation
+        boolean hasError = false;
+
+        if (email.isEmpty()) {
+            emailField.setError("Email is required");
+            hasError = true;
+        }
+
+        if (password.isEmpty()) {
+            passwordField.setError("Password is required");
+            hasError = true;
+        }
+
+        if (hasError) {
+            return; // Stop login attempt if fields are invalid
+        }
 
         new Thread(() -> {
-
-            try{
+            try {
                 URL url = new URL("https://lamp.ms.wits.ac.za/home/s2801261/login.php");
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
@@ -91,7 +106,7 @@ public class SignInActivity extends AppCompatActivity {
 
                 Scanner input = new Scanner(conn.getInputStream());
                 StringBuilder response = new StringBuilder();
-                while(input.hasNext()){
+                while (input.hasNext()) {
                     response.append(input.nextLine());
                 }
                 input.close();
@@ -100,27 +115,29 @@ public class SignInActivity extends AppCompatActivity {
                 JSONObject json = jsonArray.getJSONObject(0);
 
                 runOnUiThread(() -> {
-                    try{
-                        if(json.getBoolean("success")){
+                    try {
+                        if (json.getBoolean("success")) {
                             Toast.makeText(this, "Login Successful!! Welcome " + json.getString("name"), Toast.LENGTH_LONG).show();
 
                             String name = json.getString("name");
                             String role = json.getString("role");
-                            Intent intent = null;
+
                             SharedPreferences globalPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor globalEditor = globalPrefs.edit();
                             globalEditor.putString("staff_name", name);
                             globalEditor.apply();
-                            if(role.equals("staff")){
+
+                            Intent intent;
+                            if (role.equals("staff")) {
                                 intent = new Intent(SignInActivity.this, StaffOptionsActivity.class);
                                 intent.putExtra("staff_name", name);
-                            }
-                            //Note that we will need to change this cline once we have made a customer activity
-                            else if(role.equals("customer")){
+                            } else {
                                 intent = new Intent(SignInActivity.this, CustomerActivity.class);
                             }
+
                             SharedPreferences.Editor editor = getSharedPreferences("loginPrefs", MODE_PRIVATE).edit();
-                            if (((CheckBox)findViewById(R.id.cbRememberMe)).isChecked()) {
+                            CheckBox rememberMe = findViewById(R.id.cbRememberMe);
+                            if (rememberMe.isChecked()) {
                                 editor.putBoolean("rememberMe", true);
                                 editor.putString("email", email);
                                 editor.putString("password", password);
@@ -130,20 +147,21 @@ public class SignInActivity extends AppCompatActivity {
                             editor.apply();
 
                             startActivity(intent);
-                        }else{
+                        } else {
                             Toast.makeText(this, json.getString("message"), Toast.LENGTH_LONG).show();
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                         Toast.makeText(this, "JSON Error", Toast.LENGTH_LONG).show();
                     }
                 });
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show());
             }
 
         }).start();
     }
+
 }
