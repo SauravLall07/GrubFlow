@@ -107,6 +107,10 @@ public class SignInActivity extends AppCompatActivity {
                             String name = json.getString("name");
                             String role = json.getString("role");
                             Intent intent = null;
+                            SharedPreferences globalPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor globalEditor = globalPrefs.edit();
+                            globalEditor.putString("staff_name", name);
+                            globalEditor.apply();
                             if(role.equals("staff")){
                                 intent = new Intent(SignInActivity.this, StaffOptionsActivity.class);
                                 intent.putExtra("staff_name", name);

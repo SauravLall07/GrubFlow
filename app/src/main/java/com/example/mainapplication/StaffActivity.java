@@ -1,5 +1,6 @@
 package com.example.mainapplication;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -28,8 +29,8 @@ public class StaffActivity extends AppCompatActivity {
         });
         EditText etStaffName = findViewById(R.id.etStaffName);
         EditText etTime = findViewById(R.id.etTime);
-
-        String staffName = getIntent().getStringExtra("staff_name");
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String staffName = prefs.getString("staff_name", null);
         if (staffName != null) {
             etStaffName.setText(staffName);
         }
