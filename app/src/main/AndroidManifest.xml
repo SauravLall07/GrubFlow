@@ -25,22 +25,16 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".SignInActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".StaffActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CustomerActivity"
-            android:exported="false" />
+        <activity android:name=".CustomerActivity" android:exported="false" />
+        <activity android:name=".RegisterActivity" android:exported="false" />
+        <activity android:name=".SignInActivity" android:exported="false" />
+        <activity android:name=".StaffActivity" android:exported="false" />
+        <activity android:name=".StaffOptionsActivity" android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
+
 
 </manifest>

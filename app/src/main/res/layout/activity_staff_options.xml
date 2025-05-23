@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainOptions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/wallpaper4"
+    tools:context=".StaffOptionsActivity">
+
+    <!-- Logo (optional) -->
+    <ImageView
+        android:id="@+id/ivStaffLogo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/logo_transparent"
+        android:contentDescription="App Logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvStaffTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Staff Menu"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/black_ops_one"
+        app:layout_constraintTop_toBottomOf="@id/ivStaffLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp" />
+
+    <!-- Create New Order Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNewOrder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Create New Order"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/black_ops_one"
+        app:cornerRadius="12dp"
+        app:backgroundTint="@color/burgundy"
+        app:layout_constraintTop_toBottomOf="@id/tvStaffTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp" />
+
+    <!-- Customer Name Text Field -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCustomerName"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:hint="Enter customer name"
+        app:boxStrokeColor="@color/burgundy"
+        app:hintTextColor="@color/burgundy"
+        app:startIconDrawable="@drawable/ic_person"
+        app:startIconTint="@color/burgundy"
+        app:layout_constraintTop_toBottomOf="@id/btnNewOrder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etCustomerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/black_ops_one"
+            android:textColor="@android:color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Edit Existing Order Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnEditOrder"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Edit Existing Order"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/black_ops_one"
+        app:cornerRadius="12dp"
+        app:backgroundTint="@color/burgundy"
+        app:layout_constraintTop_toBottomOf="@id/tilCustomerName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

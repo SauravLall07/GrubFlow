@@ -58,27 +58,6 @@
             tools:ignore="MissingConstraints">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilCustomerName"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Customer Name"
-                app:hintTextColor="@color/burgundy"
-                app:boxStrokeColor="@color/burgundy"
-                app:startIconDrawable="@drawable/ic_person"
-                app:startIconTint="@color/burgundy">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCustomerName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/black_ops_one"
-                    android:inputType="textPersonName"
-                    android:textColor="@color/white"
-                    android:textCursorDrawable="@drawable/grey_cursor" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilStaffName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -99,6 +78,28 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilCustomerName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Customer Name"
+                app:hintTextColor="@color/burgundy"
+                app:boxStrokeColor="@color/burgundy"
+                app:startIconDrawable="@drawable/ic_person"
+                app:startIconTint="@color/burgundy">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etCustomerName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/black_ops_one"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@drawable/grey_cursor" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilTime"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -116,26 +117,6 @@
                     android:fontFamily="@font/black_ops_one"
                     android:textColor="@color/white"
                     android:textCursorDrawable="@drawable/grey_cursor" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilStatus"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="Order Status"
-                app:hintTextColor="@color/burgundy"
-                app:boxStrokeColor="@color/burgundy">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/black_ops_one"
-                    android:inputType="none"
-                    android:textColor="@color/white"
-                    tools:ignore="TouchTargetSizeCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
