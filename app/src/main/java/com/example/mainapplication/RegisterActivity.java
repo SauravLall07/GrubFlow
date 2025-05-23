@@ -35,7 +35,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class RegisterActivity extends AppCompatActivity {
 
     TextView returnToLogin;
-    EditText etName, etEmail, etPassword;
+    EditText etName, etEmail, etPassword, etConfirmPassword;
     AutoCompleteTextView etRole;
     Button btnRegister;
     OkHttpClient client;
@@ -72,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etRole = findViewById(R.id.etRole);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
 
         String[] roles = {"customer", "staff"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
@@ -90,7 +91,17 @@ public class RegisterActivity extends AppCompatActivity {
         String name = etName.getText().toString().trim();
         String email = etEmail.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String confirmPassword = etConfirmPassword.getText().toString().trim();
         String role = etRole.getText().toString().trim().toLowerCase();
+
+        if (name.isEmpty()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Invalid Name")
+                    .setMessage("Full name cannot be empty.")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
 
         // Validate email domain suffix
         String[] validDomains = {"@gmail.com", "@yahoo.com", "@wits.ac.za", "@hotmail.com", "@outlook.com", "@icloud.com", "@students.wits.ac.za"};
@@ -122,6 +133,16 @@ public class RegisterActivity extends AppCompatActivity {
                     .show();
             return;
         }
+
+        if (!password.equals(confirmPassword)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Passwords Do Not Match")
+                    .setMessage("Please confirm your password again.")
+                    .setPositiveButton("OK", null)
+                    .show();
+            return;
+        }
+
 
         RequestBody formBody = new FormBody.Builder()
                 .add("name", name)
