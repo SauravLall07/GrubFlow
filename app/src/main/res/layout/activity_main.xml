@@ -19,7 +19,7 @@
         android:contentDescription="Restaurant Logo"
         android:elevation="10dp"
         android:shadowColor="#88000000"
-        android:src="@drawable/logo"
+        android:src="@drawable/logo_transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
