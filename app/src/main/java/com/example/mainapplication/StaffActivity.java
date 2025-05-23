@@ -11,8 +11,6 @@ import androidx.core.view.WindowInsetsCompat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
 public class StaffActivity extends AppCompatActivity {
 
@@ -20,7 +18,7 @@ public class StaffActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_staff);
+        setContentView(R.layout.activity_staff_dashboard);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
