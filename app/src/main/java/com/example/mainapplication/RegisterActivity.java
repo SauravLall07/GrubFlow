@@ -2,10 +2,15 @@ package com.example.mainapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AutoCompleteTextView;
@@ -35,10 +40,11 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class RegisterActivity extends AppCompatActivity {
 
     TextView returnToLogin;
-    EditText etName, etEmail, etPassword, etConfirmPassword;
+    EditText etName, etEmail, etPassword, etConfirmPassword, etRestaurant;
     AutoCompleteTextView etRole;
     Button btnRegister;
     OkHttpClient client;
+    LinearLayout layoutRestaurant;
     String url = "https://lamp.ms.wits.ac.za/home/s2801261/register.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +79,8 @@ public class RegisterActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etRole = findViewById(R.id.etRole);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
+        etRestaurant = findViewById(R.id.etRestaurant);
+        layoutRestaurant = findViewById(R.id.layoutRestaurant);
 
         String[] roles = {"customer", "staff"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, roles);
@@ -81,10 +89,17 @@ public class RegisterActivity extends AppCompatActivity {
 
 // Optional: show dropdown when focused
         etRole.setOnClickListener(v -> etRole.showDropDown());
+        etRole.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedRole = parent.getItemAtPosition(position).toString().toLowerCase();
+            layoutRestaurant.setVisibility(selectedRole.equals("staff") ? View.VISIBLE : View.GONE);
+        });
+        etRestaurant.setOnClickListener(v -> showRestaurantDialog(etRestaurant));
+
         btnRegister = findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener(v -> registerUser());
     }
+
 
     private void registerUser() {
         String name = etName.getText().toString().trim();
@@ -92,6 +107,14 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
         String role = etRole.getText().toString().trim().toLowerCase();
+
+        String restaurant = etRestaurant.getText().toString().trim();
+
+        if (role.equals("staff") && restaurant.isEmpty()) {
+            etRestaurant.setError("Please select a restaurant");
+            Toast.makeText(this, "Staff must select a restaurant", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         boolean hasError = false;
 
@@ -160,6 +183,7 @@ public class RegisterActivity extends AppCompatActivity {
                 .add("email", email)
                 .add("password", password)
                 .add("role", role)
+                .add("restaurant", restaurant)
                 .build();
 
         Request request = new Request.Builder()
@@ -200,5 +224,50 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void showRestaurantDialog(EditText targetEditText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Restaurant");
+
+        // Dummy data — replace with real restaurant list from API
+        String[] restaurants = {"Burger House", "Sushi Corner", "Pizza Palace", "McDonald's", "KFC", "Nando's"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, restaurants);
+
+        // Add search bar
+        final EditText input = new EditText(this);
+        input.setHint("Search...");
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setPadding(50, 30, 50, 30);
+
+        ListView listView = new ListView(this);
+        listView.setAdapter(adapter);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(input);
+        layout.addView(listView);
+
+        builder.setView(layout);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = adapter.getItem(position);
+            targetEditText.setText(selected);
+            dialog.dismiss();
+        });
+    }
+
 
 }

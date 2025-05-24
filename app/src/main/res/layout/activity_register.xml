@@ -168,6 +168,36 @@
                 android:textColor="@color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <LinearLayout
+            android:id="@+id/layoutRestaurant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/tilRole">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Restaurant"
+                android:textColor="@color/white"
+                android:fontFamily="@font/black_ops_one" />
+
+            <EditText
+                android:id="@+id/etRestaurant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Choose restaurant"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/white"
+                android:fontFamily="@font/black_ops_one" />
+        </LinearLayout>
+
+
         <!-- Register Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegister"
@@ -180,7 +210,7 @@
             android:fontFamily="@font/black_ops_one"
             app:backgroundTint="@color/burgundy"
             app:cornerRadius="12dp"
-            app:layout_constraintTop_toBottomOf="@id/tilRole" />
+            app:layout_constraintTop_toBottomOf="@id/layoutRestaurant" />
 
         <!-- Divider (Now correctly above login prompt) -->
         <LinearLayout
