@@ -33,7 +33,7 @@ public class StaffActivity extends AppCompatActivity {
             etStaffName.setText(staffName);
         }
 
-        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
         etTime.setText(currentTime);
 
     }
