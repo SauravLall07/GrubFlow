@@ -2,26 +2,41 @@ package com.example.mainapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.material.button.MaterialButton;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import com.example.mainapplication.CreateNewOrderActivity;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.textfield.TextInputEditText;
+
 
 public class StaffMenuActivity extends AppCompatActivity {
 
-    private MaterialButton btnNewOrder, btnEditOrder;
-    private TextInputEditText etCustomerName;
+    EditText etCustomerName;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,36 +67,80 @@ public class StaffMenuActivity extends AppCompatActivity {
             return false;
         });
 
-        // Find views
-        btnNewOrder = findViewById(R.id.btnNewOrder);
-        btnEditOrder = findViewById(R.id.btnEditOrder);
+        Button btnNewOrder = findViewById(R.id.btnNewOrder);
+        Button btnEditOrder = findViewById(R.id.btnEditOrder);
         etCustomerName = findViewById(R.id.etCustomerName);
 
-        // Handle new order
         btnNewOrder.setOnClickListener(v -> {
             Intent intent = new Intent(StaffMenuActivity.this, CreateNewOrderActivity.class);
             startActivity(intent);
         });
 
-        // Handle view/edit order
         btnEditOrder.setOnClickListener(v -> {
-            String customerName = etCustomerName.getText().toString().trim();
-
-            if (customerName.isEmpty()) {
-                etCustomerName.setError("Please enter a customer name");
-                return;
+            String name = etCustomerName.getText().toString().trim();
+            if (!name.isEmpty()) {
+                checkCustomerOrders(name);
+            } else {
+                etCustomerName.setError("Customer name required");
             }
-
-            // Pass customer name to EditOrderActivity
-            Intent intent = new Intent(StaffMenuActivity.this, EditOrderActivity.class);
-            intent.putExtra("customer_name", customerName);
-            startActivity(intent);
         });
     }
+
+
     private void logout() {
 
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+
+    private void checkCustomerOrders(String name) {
+        OkHttpClient client = new OkHttpClient();
+        RequestBody formBody = new FormBody.Builder()
+                .add("customer_name", name)
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/get_order.php")
+                .post(formBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(StaffMenuActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.body() != null) {
+                    String responseString = response.body().string();
+
+                    runOnUiThread(() -> {
+                        Log.d("SERVER_RESPONSE", responseString);
+                        try {
+                            JSONArray jsonArray = new JSONArray(responseString);
+                            JSONObject json = jsonArray.getJSONObject(0);
+
+                            if (!json.getBoolean("success")) {
+                                etCustomerName.setError(json.getString("message"));
+                                return;
+                            }
+
+                            Intent intent = new Intent(StaffMenuActivity.this, OrderHistoryActivity.class);
+                            intent.putExtra("customer_name", name);
+                            intent.putExtra("orders_json", json.getJSONArray("orders").toString());
+                            startActivity(intent);
+
+                        } catch (Exception e) {
+                            Toast.makeText(StaffMenuActivity.this, "Response parsing error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
     }
 }
