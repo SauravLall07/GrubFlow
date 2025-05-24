@@ -189,7 +189,7 @@
                     android:id="@+id/btnSubmitOrder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:fontFamily="@font/black_ops_one"
                     android:text="SUBMIT ORDER"
                     android:textColor="@color/white"
