@@ -61,7 +61,7 @@ public class StaffOptionsActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://lamp.ms.wits.ac.za/home/s2801261/check_customer_orders.php")
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/get_order.php")
                 .post(formBody)
                 .build();
 
