@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainOptions"
@@ -8,7 +9,7 @@
     android:background="@drawable/wallpaper4"
     tools:context=".StaffMenuActivity">
 
-    <!-- Logo (optional) -->
+    <!-- Logo -->
     <ImageView
         android:id="@+id/ivStaffLogo"
         android:layout_width="120dp"
@@ -29,10 +30,10 @@
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:fontFamily="@font/black_ops_one"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/ivStaffLogo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Create New Order Button -->
     <com.google.android.material.button.MaterialButton
@@ -45,14 +46,14 @@
         android:fontFamily="@font/black_ops_one"
         app:cornerRadius="12dp"
         app:backgroundTint="@color/burgundy"
-        app:layout_constraintTop_toBottomOf="@id/tvStaffTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="50dp"
         android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp" />
+        android:layout_marginEnd="60dp"
+        app:layout_constraintTop_toBottomOf="@id/tvStaffTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Customer Name Text Field -->
+    <!-- Customer Name Input -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilCustomerName"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -64,11 +65,11 @@
         app:hintTextColor="@color/burgundy"
         app:startIconDrawable="@drawable/ic_person"
         app:startIconTint="@color/burgundy"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
         app:layout_constraintTop_toBottomOf="@id/btnNewOrder"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etCustomerName"
@@ -78,7 +79,7 @@
             android:textColor="@android:color/white" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Edit Existing Order Button -->
+    <!-- View Order History Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnEditOrder"
         android:layout_width="0dp"
@@ -89,11 +90,11 @@
         android:fontFamily="@font/black_ops_one"
         app:cornerRadius="12dp"
         app:backgroundTint="@color/burgundy"
-        app:layout_constraintTop_toBottomOf="@id/tilCustomerName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="20dp"
         android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp" />
+        android:layout_marginEnd="60dp"
+        app:layout_constraintTop_toBottomOf="@id/tilCustomerName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

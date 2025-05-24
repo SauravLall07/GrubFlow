@@ -69,17 +69,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         }
     }
 
-    public static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView tvRestaurant, tvStatus;
-        ImageButton btnThumbUp, btnThumbDown;
-
-        public OrderViewHolder(@NonNull View itemView) {
-            super(itemView);
-            btnThumbUp = itemView.findViewById(R.id.btnThumbUp);
-            btnThumbDown = itemView.findViewById(R.id.btnThumbDown);
-        }
-    }
-
     private void sendRating(String orderId, boolean isThumbUp) {
         OkHttpClient client = new OkHttpClient();
 
@@ -89,7 +78,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://lamp.ms.wits.ac.za/home/s2801261/create_order.php")
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/create_order.php") // Confirm this URL!
                 .post(formBody)
                 .build();
 
@@ -104,5 +93,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 }
             }
         });
+    }
+
+    public static class OrderViewHolder extends RecyclerView.ViewHolder {
+        TextView tvRestaurant, tvStatus;
+        ImageButton btnThumbUp, btnThumbDown;
+
+        public OrderViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            tvStatus = itemView.findViewById(R.id.tvStatus);
+            btnThumbUp = itemView.findViewById(R.id.btnThumbUp);
+            btnThumbDown = itemView.findViewById(R.id.btnThumbDown);
+        }
     }
 }
