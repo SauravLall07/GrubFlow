@@ -28,7 +28,7 @@ public class EditOrderActivity extends AppCompatActivity {
         tvCustomerName.setText("Customer: " + customerName);
 
         // Dummy example: Replace with real order loading
-        List<String> orders = fetchOrdersForCustomer(customerName);
+        List<Order> orders = fetchOrdersForCustomer(customerName);
 
         if (orders.isEmpty()) {
             tvOrderHistory.setVisibility(View.VISIBLE);
@@ -38,12 +38,12 @@ public class EditOrderActivity extends AppCompatActivity {
             rvOrders.setVisibility(View.VISIBLE);
 
             rvOrders.setLayoutManager(new LinearLayoutManager(this));
-            //rvOrders.setAdapter(new OrderAdapter(orders));
+            rvOrders.setAdapter(new OrderAdapter(this, orders));
         }
     }
 
     // Replace this with a real API or DB query
-    private List<String> fetchOrdersForCustomer(String name) {
+    private List<Order> fetchOrdersForCustomer(String name) {
         // return emptyList() to simulate "no orders"
         // return Arrays.asList("Pizza - Large", "Burger - Medium") for fake orders
         return java.util.Collections.emptyList();
