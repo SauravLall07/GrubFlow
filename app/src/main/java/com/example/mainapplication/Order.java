@@ -2,22 +2,24 @@ package com.example.mainapplication;
 
 public class Order {
     private String orderId;
-    private String restaurantName;
+    private String details;
     private String status;
+    private boolean isPaid;
     private boolean rated;
 
     public Order(String orderId, String restaurantName, String status, boolean rated) {
         this.orderId = orderId;
-        this.restaurantName = restaurantName;
+        this.details = restaurantName;
         this.status = status;
-        this.rated = rated;
+        this.isPaid = isPaid;
+        this.rated = false;
     }
 
     public String getOrderId() {
         return orderId;
     }
-    public String getRestaurantName() {
-        return restaurantName;
+    public String getDetails() {
+        return details;
     }
     public String getStatus() {
         return status;
@@ -25,6 +27,8 @@ public class Order {
     public boolean isRated() {
         return rated;
     }
+    public boolean isPaid() {
+        return isPaid; }
     public void setRated(boolean rated) {
         this.rated = rated;
     }

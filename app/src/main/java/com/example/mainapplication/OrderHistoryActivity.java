@@ -39,7 +39,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
         try {
             JSONArray orders = new JSONArray(ordersJson);
             if (orders.length() == 0) {
-                // No orders
                 rvOrders.setVisibility(View.GONE);
                 tvOrderHistory.setVisibility(View.VISIBLE);
                 tvOrderHistory.setText("No order history.");
@@ -62,5 +61,19 @@ public class OrderHistoryActivity extends AppCompatActivity {
             rvOrders.setVisibility(View.GONE);
             tvOrderHistory.setVisibility(View.VISIBLE);
         }
+    }
+    //stub method
+    private String getOrdersJsonForCustomer(String customerName) {
+        // For example purposes:
+        if (customerName.equalsIgnoreCase("Alice")) {
+            // Return a sample JSON array string of orders
+            return "[{\"id\":\"123\", \"details\":\"Burger & Fries\", \"status\":\"Delivered\", \"is_paid\":true}," +
+                    "{\"id\":\"124\", \"details\":\"Pizza\", \"status\":\"Pending\", \"is_paid\":false}]";
+        } else if (customerName.equalsIgnoreCase("Bob")) {
+            // Bob has no orders
+            return "[]";
+        }
+        // Customer not found, return null
+        return null;
     }
 }

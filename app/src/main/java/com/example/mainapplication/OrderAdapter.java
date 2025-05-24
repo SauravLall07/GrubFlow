@@ -24,8 +24,8 @@ import okhttp3.Response;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
-    private List<Order> orderList;
-    private Context context;
+    private final List<Order> orderList;
+    private final Context context;
 
     public OrderAdapter(Context context, List<Order> orders) {
         this.context = context;
@@ -42,26 +42,31 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
-        holder.tvRestaurant.setText(order.getRestaurantName());
-        holder.tvStatus.setText("Status: " + order.getStatus());
+        if (order != null) {
+            holder.tvRestaurant.setText(order.getDetails());
+            holder.tvStatus.setText("Status: " + order.getStatus());
 
-        holder.btnThumbUp.setEnabled(!order.isRated());
-        holder.btnThumbDown.setEnabled(!order.isRated());
+            boolean alreadyRated = order.isRated();
+            holder.btnThumbUp.setEnabled(!alreadyRated);
+            holder.btnThumbDown.setEnabled(!alreadyRated);
 
-        View.OnClickListener rateListener = v -> {
-            boolean isUp = v.getId() == R.id.btnThumbUp;
-            sendRating(order.getOrderId(), isUp);
-            order.setRated(true);
-            notifyItemChanged(position);
-        };
-
-        holder.btnThumbUp.setOnClickListener(rateListener);
-        holder.btnThumbDown.setOnClickListener(rateListener);
+            holder.btnThumbUp.setOnClickListener(v -> handleRatingClick(holder.getAdapterPosition(), true));
+            holder.btnThumbDown.setOnClickListener(v -> handleRatingClick(holder.getAdapterPosition(), false));
+        }
     }
 
     @Override
     public int getItemCount() {
         return orderList.size();
+    }
+
+    private void handleRatingClick(int position, boolean isThumbUp) {
+        if (position != RecyclerView.NO_POSITION) {
+            Order order = orderList.get(position);
+            sendRating(order.getOrderId(), isThumbUp);
+            order.setRated(true);
+            notifyItemChanged(position);
+        }
     }
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
@@ -70,8 +75,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvRestaurant = itemView.findViewById(R.id.tvRestaurantName);
-            tvStatus = itemView.findViewById(R.id.tvOrderStatus);
             btnThumbUp = itemView.findViewById(R.id.btnThumbUp);
             btnThumbDown = itemView.findViewById(R.id.btnThumbDown);
         }
@@ -86,7 +89,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://yourdomain.com/rate_order.php")
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/get_order.php")
                 .post(formBody)
                 .build();
 
