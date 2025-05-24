@@ -58,7 +58,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
 
         // Set staff name and time
         etStaffName.setText(staffName);
-        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        String currentTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
         etTime.setText(currentTime);
 
         if (userId == -1) {
@@ -139,7 +139,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             etCustomerName.setText("");
             numberPickerQty.setValue(1);
 
-            String newTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
+            String newTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
             etTime.setText(newTime);
 
             Toast.makeText(this,
