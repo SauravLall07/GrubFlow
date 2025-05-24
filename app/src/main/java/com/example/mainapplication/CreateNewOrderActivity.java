@@ -8,6 +8,9 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -18,8 +21,11 @@ import okhttp3.Response;
 
 public class CreateNewOrderActivity extends AppCompatActivity {
 
+    private EditText etStaffName;
+    private EditText etCustomerName;
     private EditText etRestaurantName;
     private EditText etItemName;
+    private EditText etTime;
     private NumberPicker numberPickerQty;
     private Button btnSubmitOrder;
 
@@ -33,8 +39,11 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_staff_new_order);
 
         // Initialize views
+        etStaffName = findViewById(R.id.etStaffName);
+        etCustomerName = findViewById(R.id.etCustomerName);
         etRestaurantName = findViewById(R.id.etRestaurantName);
         etItemName = findViewById(R.id.etItemName);
+        etTime = findViewById(R.id.etTime);
         numberPickerQty = findViewById(R.id.numberPickerQty);
         btnSubmitOrder = findViewById(R.id.btnSubmitOrder);
 
@@ -42,11 +51,17 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         numberPickerQty.setMinValue(1);
         numberPickerQty.setMaxValue(100);
 
-        // Get logged-in user ID
+        // Get logged-in user info
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         final int userId = prefs.getInt("user_id", -1);
+        String staffName = prefs.getString("staff_name", "");
 
-        if(userId == -1) {
+        // Set staff name and time
+        etStaffName.setText(staffName);
+        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        etTime.setText(currentTime);
+
+        if (userId == -1) {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -58,20 +73,24 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     private void validateAndSubmitOrder(int userId) {
         String restaurantName = etRestaurantName.getText().toString().trim();
         String itemName = etItemName.getText().toString().trim();
+        String customerName = etCustomerName.getText().toString().trim();
         int quantity = numberPickerQty.getValue();
 
-        // Validate inputs
-        if(restaurantName.isEmpty()) {
+        if (restaurantName.isEmpty()) {
             etRestaurantName.setError("Restaurant name required");
             return;
         }
 
-        if(itemName.isEmpty()) {
+        if (itemName.isEmpty()) {
             etItemName.setError("Item name required");
             return;
         }
 
-        // Hardcoded order defaults
+        if (customerName.isEmpty()) {
+            etCustomerName.setError("Customer name required");
+            return;
+        }
+
         String status = "pending";
         boolean isPaid = false;
 
@@ -83,6 +102,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                 .add("quantity", String.valueOf(quantity))
                 .add("status", status)
                 .add("isPaid", isPaid ? "1" : "0")
+                .add("customer_name", customerName)
                 .build();
 
         submitOrderToServer(formBody);
@@ -113,20 +133,21 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     }
 
     private void handleServerResponse(String response) {
-        if(response.contains("success")) {
-            // Clear fields on success
+        if (response.contains("success")) {
             etRestaurantName.setText("");
             etItemName.setText("");
+            etCustomerName.setText("");
             numberPickerQty.setValue(1);
+
+            String newTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
+            etTime.setText(newTime);
 
             Toast.makeText(this,
                     "Order created successfully!",
                     Toast.LENGTH_LONG).show();
-        }
-        else if(response.contains("Restaurant not found")) {
+        } else if (response.contains("Restaurant not found")) {
             etRestaurantName.setError("Restaurant not found in system");
-        }
-        else {
+        } else {
             Toast.makeText(this,
                     "Order failed: " + response,
                     Toast.LENGTH_LONG).show();
