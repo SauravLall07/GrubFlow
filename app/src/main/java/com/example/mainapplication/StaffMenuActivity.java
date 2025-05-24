@@ -40,7 +40,7 @@ public class StaffMenuActivity extends AppCompatActivity {
         etCustomerName = findViewById(R.id.etCustomerName);
 
         btnNewOrder.setOnClickListener(v -> {
-            Intent intent = new Intent(StaffMenuActivity.this, StaffActivity.class);
+            Intent intent = new Intent(StaffMenuActivity.this, CreateNewOrderActivity.class);
             startActivity(intent);
         });
 
