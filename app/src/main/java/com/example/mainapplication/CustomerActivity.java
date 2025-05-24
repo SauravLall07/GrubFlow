@@ -24,20 +24,20 @@ public class CustomerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_order_history);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.orderHistoryLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        recyclerView = findViewById(R.id.rvOrders);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //recyclerView = findViewById(R.id.rvOrders);
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new OrderAdapter(this, orderList);
-        recyclerView.setAdapter(adapter);
+       // adapter = new OrderAdapter(this, orderList);
+        //recyclerView.setAdapter(adapter);
 
         // Replace this with your API call
-        mockLoadOrders();
+       // mockLoadOrders();
     }
 
     private void mockLoadOrders() {
