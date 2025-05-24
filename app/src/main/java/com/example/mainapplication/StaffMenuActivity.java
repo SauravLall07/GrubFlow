@@ -26,21 +26,21 @@ import okhttp3.Response;
 
 
 
-public class StaffOptionsActivity extends AppCompatActivity {
+public class StaffMenuActivity extends AppCompatActivity {
 
     EditText etCustomerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_staff_options);
+        setContentView(R.layout.activity_staff_menu);
 
         Button btnNewOrder = findViewById(R.id.btnNewOrder);
         Button btnEditOrder = findViewById(R.id.btnEditOrder);
         etCustomerName = findViewById(R.id.etCustomerName);
 
         btnNewOrder.setOnClickListener(v -> {
-            Intent intent = new Intent(StaffOptionsActivity.this, StaffActivity.class);
+            Intent intent = new Intent(StaffMenuActivity.this, StaffActivity.class);
             startActivity(intent);
         });
 
@@ -69,7 +69,7 @@ public class StaffOptionsActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 runOnUiThread(() ->
-                        Toast.makeText(StaffOptionsActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                        Toast.makeText(StaffMenuActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show()
                 );
             }
 
@@ -89,13 +89,13 @@ public class StaffOptionsActivity extends AppCompatActivity {
                                 return;
                             }
 
-                            Intent intent = new Intent(StaffOptionsActivity.this, OrderHistoryActivity.class);
+                            Intent intent = new Intent(StaffMenuActivity.this, OrderHistoryActivity.class);
                             intent.putExtra("customer_name", name);
                             intent.putExtra("orders_json", json.getJSONArray("orders").toString());
                             startActivity(intent);
 
                         } catch (Exception e) {
-                            Toast.makeText(StaffOptionsActivity.this, "Response parsing error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(StaffMenuActivity.this, "Response parsing error", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

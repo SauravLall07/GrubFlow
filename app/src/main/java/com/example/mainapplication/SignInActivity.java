@@ -129,7 +129,7 @@ public class SignInActivity extends AppCompatActivity {
 
                             Intent intent;
                             if (role.equals("staff")) {
-                                intent = new Intent(SignInActivity.this, StaffOptionsActivity.class);
+                                intent = new Intent(SignInActivity.this, StaffMenuActivity.class);
                                 intent.putExtra("staff_name", name);
                             } else {
                                 intent = new Intent(SignInActivity.this, CustomerActivity.class);

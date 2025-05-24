@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/wallpaper4"
-    tools:context=".StaffOptionsActivity">
+    tools:context=".StaffMenuActivity">
 
     <!-- Logo (optional) -->
     <ImageView
