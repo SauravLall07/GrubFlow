@@ -6,20 +6,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -30,138 +18,118 @@ import okhttp3.Response;
 
 public class CreateNewOrderActivity extends AppCompatActivity {
 
-    private EditText etStaffName, etTime, etCustomerName, etRestaurantName, etItemName;
+    private EditText etRestaurantName;
+    private EditText etItemName;
     private NumberPicker numberPickerQty;
     private Button btnSubmitOrder;
-    private OkHttpClient client;
+
+    private final OkHttpClient client = new OkHttpClient();
+    private static final String CREATE_ORDER_URL =
+            "https://lamp.ms.wits.ac.za/home/s2801261/create_order.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_staff_new_order);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        etStaffName = findViewById(R.id.etStaffName);
-        etTime = findViewById(R.id.etTime);
-        etCustomerName = findViewById(R.id.etCustomerName);
+        // Initialize views
         etRestaurantName = findViewById(R.id.etRestaurantName);
         etItemName = findViewById(R.id.etItemName);
         numberPickerQty = findViewById(R.id.numberPickerQty);
         btnSubmitOrder = findViewById(R.id.btnSubmitOrder);
 
-        client = new OkHttpClient();
-
-        loadStaffName();
-        setCurrentDateTime();
-
+        // Configure number picker
         numberPickerQty.setMinValue(1);
-        numberPickerQty.setMaxValue(20);
-        numberPickerQty.setValue(1);
+        numberPickerQty.setMaxValue(100);
 
-        btnSubmitOrder.setOnClickListener(v -> submitOrder());
-    }
-
-    private void loadStaffName() {
+        // Get logged-in user ID
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        String staffName = prefs.getString("staff_name", null);
-        if (staffName != null) {
-            etStaffName.setText(staffName);
-            etStaffName.setEnabled(false);
+        final int userId = prefs.getInt("user_id", -1);
+
+        if(userId == -1) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_LONG).show();
+            finish();
+            return;
         }
+
+        btnSubmitOrder.setOnClickListener(v -> validateAndSubmitOrder(userId));
     }
 
-    private void setCurrentDateTime() {
-        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
-        etTime.setText(currentTime);
-        etTime.setEnabled(false);
-    }
-
-    private void submitOrder() {
-        String staffName = etStaffName.getText().toString().trim();
-        String time = etTime.getText().toString().trim();
-        String customerName = etCustomerName.getText().toString().trim();
+    private void validateAndSubmitOrder(int userId) {
         String restaurantName = etRestaurantName.getText().toString().trim();
         String itemName = etItemName.getText().toString().trim();
         int quantity = numberPickerQty.getValue();
 
-        if (customerName.isEmpty()) {
-            etCustomerName.setError("Customer name is required");
-            etCustomerName.requestFocus();
-            return;
-        }
-        if (restaurantName.isEmpty()) {
-            etRestaurantName.setError("Restaurant name is required");
-            etRestaurantName.requestFocus();
-            return;
-        }
-        if (itemName.isEmpty()) {
-            etItemName.setError("Item name is required");
-            etItemName.requestFocus();
+        // Validate inputs
+        if(restaurantName.isEmpty()) {
+            etRestaurantName.setError("Restaurant name required");
             return;
         }
 
-        btnSubmitOrder.setEnabled(false);
+        if(itemName.isEmpty()) {
+            etItemName.setError("Item name required");
+            return;
+        }
 
+        // Hardcoded order defaults
+        String status = "pending";
+        boolean isPaid = false;
+
+        // Build request body
         RequestBody formBody = new FormBody.Builder()
-                .add("staff_name", staffName)
-                .add("order_time", time)
-                .add("customer_name", customerName)
+                .add("user_id", String.valueOf(userId))
                 .add("restaurant_name", restaurantName)
                 .add("item_name", itemName)
                 .add("quantity", String.valueOf(quantity))
+                .add("status", status)
+                .add("isPaid", isPaid ? "1" : "0")
                 .build();
 
+        submitOrderToServer(formBody);
+    }
+
+    private void submitOrderToServer(RequestBody formBody) {
         Request request = new Request.Builder()
-                .url("https://lamp.ms.wits.ac.za/home/s2801261/create_order.php")
+                .url(CREATE_ORDER_URL)
                 .post(formBody)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> {
-                    btnSubmitOrder.setEnabled(true);
-                    Toast.makeText(CreateNewOrderActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                runOnUiThread(() ->
+                        Toast.makeText(CreateNewOrderActivity.this,
+                                "Network error: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show()
+                );
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String respStr = response.body() != null ? response.body().string() : "";
-                runOnUiThread(() -> {
-                    btnSubmitOrder.setEnabled(true);
-                    if (response.isSuccessful()) {
-                        try {
-                            JSONObject json = new JSONObject(respStr);
-                            if (json.getBoolean("success")) {
-                                Toast.makeText(CreateNewOrderActivity.this, "Order created successfully!", Toast.LENGTH_LONG).show();
-                                clearForm();
-                            } else {
-                                Toast.makeText(CreateNewOrderActivity.this, "Failed: " + json.getString("message"), Toast.LENGTH_LONG).show();
-                            }
-                        } catch (Exception e) {
-                            Toast.makeText(CreateNewOrderActivity.this, "Response parse error", Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        Toast.makeText(CreateNewOrderActivity.this, "Server error: " + response.message(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                final String responseBody = response.body().string();
+                runOnUiThread(() -> handleServerResponse(responseBody));
             }
         });
     }
 
-    private void clearForm() {
-        etCustomerName.setText("");
-        etRestaurantName.setText("");
-        etItemName.setText("");
-        numberPickerQty.setValue(1);
-        setCurrentDateTime();
+    private void handleServerResponse(String response) {
+        if(response.contains("success")) {
+            // Clear fields on success
+            etRestaurantName.setText("");
+            etItemName.setText("");
+            numberPickerQty.setValue(1);
+
+            Toast.makeText(this,
+                    "Order created successfully!",
+                    Toast.LENGTH_LONG).show();
+        }
+        else if(response.contains("Restaurant not found")) {
+            etRestaurantName.setError("Restaurant not found in system");
+        }
+        else {
+            Toast.makeText(this,
+                    "Order failed: " + response,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

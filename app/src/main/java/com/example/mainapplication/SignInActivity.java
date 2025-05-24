@@ -7,15 +7,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.CheckBox;
+import android.content.SharedPreferences;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import android.content.SharedPreferences;
-import android.widget.CheckBox;
-
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,6 +29,7 @@ public class SignInActivity extends AppCompatActivity {
 
     Button loginButton;
     EditText emailField, passwordField;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,25 +48,18 @@ public class SignInActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> loginUser());
 
         TextView tvSignUp = findViewById(R.id.tvSignUp);
-        tvSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SignInActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
+        tvSignUp.setOnClickListener(v -> {
+            Intent intent = new Intent(SignInActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
 
         CheckBox rememberMe = findViewById(R.id.cbRememberMe);
         SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-
-// Autofill if saved
         if (preferences.getBoolean("rememberMe", false)) {
             emailField.setText(preferences.getString("email", ""));
             passwordField.setText(preferences.getString("password", ""));
             rememberMe.setChecked(true);
         }
-
-
     }
 
     public void loginUser() {
@@ -75,20 +68,15 @@ public class SignInActivity extends AppCompatActivity {
 
         // Field validation
         boolean hasError = false;
-
         if (email.isEmpty()) {
             emailField.setError("Email is required");
             hasError = true;
         }
-
         if (password.isEmpty()) {
             passwordField.setError("Password is required");
             hasError = true;
         }
-
-        if (hasError) {
-            return; // Stop login attempt if fields are invalid
-        }
+        if (hasError) return;
 
         new Thread(() -> {
             try {
@@ -106,9 +94,7 @@ public class SignInActivity extends AppCompatActivity {
 
                 Scanner input = new Scanner(conn.getInputStream());
                 StringBuilder response = new StringBuilder();
-                while (input.hasNext()) {
-                    response.append(input.nextLine());
-                }
+                while (input.hasNext()) response.append(input.nextLine());
                 input.close();
 
                 JSONArray jsonArray = new JSONArray(response.toString());
@@ -119,13 +105,18 @@ public class SignInActivity extends AppCompatActivity {
                         if (json.getBoolean("success")) {
                             Toast.makeText(this, "Login Successful!! Welcome " + json.getString("name"), Toast.LENGTH_LONG).show();
 
+                            // Extract values
+                            int userId = json.getInt("user_id");        // ← NEW: get user_id
                             String name = json.getString("name");
                             String role = json.getString("role");
 
+                            // Save into SharedPreferences
                             SharedPreferences globalPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor globalEditor = globalPrefs.edit();
                             globalEditor.putString("staff_name", name);
+                            globalEditor.putInt("user_id", userId);    // ← NEW: store user_id
                             globalEditor.apply();
+                            // … after globalEditor.apply():
 
                             Intent intent;
                             if (role.equals("staff")) {
@@ -135,6 +126,7 @@ public class SignInActivity extends AppCompatActivity {
                                 intent = new Intent(SignInActivity.this, CustomerActivity.class);
                             }
 
+                            // Remember-me prefs
                             SharedPreferences.Editor editor = getSharedPreferences("loginPrefs", MODE_PRIVATE).edit();
                             CheckBox rememberMe = findViewById(R.id.cbRememberMe);
                             if (rememberMe.isChecked()) {
@@ -155,13 +147,10 @@ public class SignInActivity extends AppCompatActivity {
                         Toast.makeText(this, "JSON Error", Toast.LENGTH_LONG).show();
                     }
                 });
-
             } catch (Exception e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show());
             }
-
         }).start();
     }
-
 }
