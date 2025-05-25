@@ -114,7 +114,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/black_ops_one"
-                        android:inputType="text"
+                        android:focusable="false"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:longClickable="false"
+                        android:inputType="none"
                         android:textColor="@color/white"
                         android:textCursorDrawable="@drawable/grey_cursor" />
                 </com.google.android.material.textfield.TextInputLayout>

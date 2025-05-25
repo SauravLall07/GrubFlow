@@ -7,6 +7,9 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,6 +54,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         numberPickerQty.setMinValue(1);
         numberPickerQty.setMaxValue(100);
 
+
         // Get logged-in user info
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         final int userId = prefs.getInt("user_id", -1);
@@ -58,6 +62,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
 
         // Set staff name and time
         etStaffName.setText(staffName);
+        fetchRestaurantForStaff(userId);
         String currentTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
         etTime.setText(currentTime);
 
@@ -153,4 +158,51 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
         }
     }
+
+    private void fetchRestaurantForStaff(int userId) {
+        RequestBody body = new FormBody.Builder()
+                .add("user_id", String.valueOf(userId))
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/get_staff_restaurant.php")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(CreateNewOrderActivity.this,
+                        "Failed to load restaurant info",
+                        Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseData = response.body().string();
+
+                runOnUiThread(() -> {
+                    try {
+                        JSONObject json = new JSONObject(responseData);
+                        if (json.getBoolean("success")) {
+                            String restaurant = json.getString("restaurant");
+                            etRestaurantName.setText(restaurant);
+                            etRestaurantName.setEnabled(false); // optional: lock it from editing
+                        } else {
+                            Toast.makeText(CreateNewOrderActivity.this,
+                                    "No restaurant info found for staff.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(CreateNewOrderActivity.this,
+                                "Error parsing restaurant info",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
 }
+
+
