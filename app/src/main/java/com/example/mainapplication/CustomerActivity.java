@@ -1,7 +1,9 @@
 package com.example.mainapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -11,25 +13,20 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class CustomerActivity extends AppCompatActivity {
-
-    private RecyclerView recyclerView;
-    private OrderAdapter adapter;
-    private List<Order> orderList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
+
+        // Make sure this layout is for your customer screen, not order history!
         setContentView(R.layout.activity_order_history);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.orderHistoryLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -61,16 +58,19 @@ public class CustomerActivity extends AppCompatActivity {
             return false;
         });
 
-        //recyclerView = findViewById(R.id.rvOrders);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-       // adapter = new OrderAdapter(this, orderList);
-        //recyclerView.setAdapter(adapter);
-
-        // Replace this with your API call
-       // mockLoadOrders();
+        // Find your Order History button in the layout (create it if it doesn't exist)
+        Button btnOrderHistory = findViewById(R.id.btnOrderHistory);
+        btnOrderHistory.setOnClickListener(v -> {
+            SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+            int userId = prefs.getInt("user_id", -1);
+            if (userId == -1) {
+                // Handle missing user ID (not logged in)
+                // Toast or redirect to login
+                return;
+            }
+            Intent intent = new Intent(CustomerActivity.this, OrderHistoryActivity.class);
+            intent.putExtra("user_id", String.valueOf(userId));  // Pass user ID as string
+            startActivity(intent);
+        });
     }
-
-
-
 }

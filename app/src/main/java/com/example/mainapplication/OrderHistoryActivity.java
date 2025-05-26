@@ -29,7 +29,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
     private OrderAdapter adapter;
     private List<Order> orderList = new ArrayList<>();
     private final OkHttpClient client = new OkHttpClient();
-    private String userId = "1"; // Replace with dynamic user ID
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +43,16 @@ public class OrderHistoryActivity extends AppCompatActivity {
         adapter = new OrderAdapter(this, orderList);
         rvOrders.setAdapter(adapter);
 
+        // Get user ID from Intent extras
+        userId = getIntent().getStringExtra("user_id");
+        if (userId == null || userId.isEmpty()) {
+            tvOrderHistory.setText("No user ID found.");
+            return;
+        }
+
         fetchOrders();
     }
+
 
     private void fetchOrders() {
         RequestBody formBody = new FormBody.Builder()
