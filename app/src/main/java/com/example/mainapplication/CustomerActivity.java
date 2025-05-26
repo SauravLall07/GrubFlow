@@ -24,7 +24,6 @@ public class CustomerActivity extends AppCompatActivity {
 
         EdgeToEdge.enable(this);
 
-        // Make sure this layout is for your customer screen, not order history!
         setContentView(R.layout.activity_order_history);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.orderHistoryLayout), (v, insets) -> {
@@ -58,14 +57,11 @@ public class CustomerActivity extends AppCompatActivity {
             return false;
         });
 
-        // Find your Order History button in the layout (create it if it doesn't exist)
         Button btnOrderHistory = findViewById(R.id.btnOrderHistory);
         btnOrderHistory.setOnClickListener(v -> {
             SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
             int userId = prefs.getInt("user_id", -1);
             if (userId == -1) {
-                // Handle missing user ID (not logged in)
-                // Toast or redirect to login
                 return;
             }
             Intent intent = new Intent(CustomerActivity.this, OrderHistoryActivity.class);
