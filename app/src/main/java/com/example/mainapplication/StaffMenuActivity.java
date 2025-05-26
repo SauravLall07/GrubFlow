@@ -3,8 +3,10 @@ package com.example.mainapplication;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,6 +44,19 @@ public class StaffMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_menu);
+
+        NavigationView navigationView = findViewById(R.id.navigationView);
+
+        View headerView = navigationView.getHeaderView(0);
+
+        TextView tvMemberName = headerView.findViewById(R.id.tvMemberName);
+
+        String memberName = getIntent().getStringExtra("staff_name");
+        if (memberName != null && !memberName.isEmpty()) {
+            tvMemberName.setText(memberName);
+        } else {
+            tvMemberName.setText("Staff");
+        }
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

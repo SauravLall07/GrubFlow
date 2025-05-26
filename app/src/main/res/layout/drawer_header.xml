@@ -11,6 +11,7 @@
         android:gravity="bottom">
 
         <TextView
+            android:id="@+id/tvMemberName"
             android:text="Staff"
             android:textSize="20sp"
             android:textColor="@android:color/white"
