@@ -71,13 +71,6 @@ public class CustomerActivity extends AppCompatActivity {
        // mockLoadOrders();
     }
 
-    private void mockLoadOrders() {
-        orderList.add(new Order("101", "Burger House", "Pending", false));
-        orderList.add(new Order("102", "Sushi Corner", "Ready", true));
-        orderList.add(new Order("103", "Pizza Palace", "Collected", false));
-        orderList.add(new Order("104", "McDonalds", "Ready", false));
-        orderList.add(new Order("105", "KFC", "Pending", false));
-        orderList.add(new Order("106", "Nandos", "Collected", true));
-        adapter.notifyDataSetChanged();
-    }
+
+
 }

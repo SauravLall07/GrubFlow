@@ -78,7 +78,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://lamp.ms.wits.ac.za/home/s2801261/create_order.php") // Confirm this URL!
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/submit_rating.php") // Confirm this URL!
                 .post(formBody)
                 .build();
 
