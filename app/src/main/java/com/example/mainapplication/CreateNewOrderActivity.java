@@ -110,10 +110,10 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                 .add("customer_name", customerName)
                 .build();
 
-        submitOrderToServer(formBody);
+        submitOrderToServer(formBody, userId);
     }
 
-    private void submitOrderToServer(RequestBody formBody) {
+    private void submitOrderToServer(RequestBody formBody, int userId) {
         Request request = new Request.Builder()
                 .url(CREATE_ORDER_URL)
                 .post(formBody)
@@ -132,14 +132,14 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseBody = response.body().string();
-                runOnUiThread(() -> handleServerResponse(responseBody));
+                runOnUiThread(() -> handleServerResponse(responseBody, userId));
             }
         });
     }
 
-    private void handleServerResponse(String response) {
+    private void handleServerResponse(String response, int userId) {
         if (response.contains("success")) {
-            etRestaurantName.setText("");
+            fetchRestaurantForStaff(userId);
             etItemName.setText("");
             etCustomerName.setText("");
             numberPickerQty.setValue(1);
