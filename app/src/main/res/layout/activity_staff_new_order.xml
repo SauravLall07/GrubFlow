@@ -163,9 +163,9 @@
                     <NumberPicker
                         android:id="@+id/numberPickerQty"
                         android:layout_width="80dp"
-                        android:layout_height="40dp"
-                        android:scaleX="0.8"
-                        android:scaleY="0.8"
+                        android:layout_height="60dp"
+                        android:scaleX="1.2"
+                        android:scaleY="1.2"
                         android:theme="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog" />
                 </LinearLayout>
 
