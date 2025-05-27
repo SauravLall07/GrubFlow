@@ -4,4 +4,14 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="sloth_icon">Sloth holding burger</string>
+    <string name="logo_desc">Restaurant Logo</string>
+    <string name="new_order">New Order</string>
+    <string name="staff_member">Staff Member</string>
+    <string name="select_customer">Select a customer</string>
+    <string name="restaurant_name">Restaurant Name</string>
+    <string name="item_name">Item Name</string>
+    <string name="quantity">Quantity:</string>
+    <string name="time">Time</string>
+    <string name="submit_order">SUBMIT ORDER</string>
+
 </resources>

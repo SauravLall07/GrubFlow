@@ -55,6 +55,9 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     private static final String CREATE_ORDER_URL =
             "https://lamp.ms.wits.ac.za/home/s2801261/create_order.php";
 
+    private List<User> currentUserList = new ArrayList<>();
+    private boolean isProgrammaticTextChange = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,19 +75,21 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         userAdapter = new UserAdapter(user -> {
             selectedUserId = user.getId();
             selectedUserName = user.getName();
-            userSearchInput.setText(selectedUserName);
 
-            // Clear user list to hide dropdown content immediately
+            isProgrammaticTextChange = true;
+            userSearchInput.setText(selectedUserName);
+            isProgrammaticTextChange = false;
+
             userAdapter.setUsers(new ArrayList<>());
             hideDropdown();
 
-            // Hide keyboard and clear focus from input
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(userSearchInput.getWindowToken(), 0);
             }
             userSearchInput.clearFocus();
         });
+
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setAdapter(userAdapter);
 
@@ -93,20 +98,32 @@ public class CreateNewOrderActivity extends AppCompatActivity {
 
         userSearchInput.addTextChangedListener(new TextWatcher() {
             @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isProgrammaticTextChange) return;
+
                 if (s.length() < 1) {
-                    // Reset selected user when input cleared
                     selectedUserId = -1;
                     selectedUserName = "";
                     userAdapter.setUsers(new ArrayList<>());
                     hideDropdown();
                     return;
                 }
+
                 searchUsers(s.toString());
             }
 
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        userSearchInput.setOnClickListener(v -> {
+            if (!selectedUserName.isEmpty() && !isDropdownVisible && !currentUserList.isEmpty()) {
+                userAdapter.setUsers(currentUserList);
+                showDropdown();
+            }
         });
 
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
@@ -156,6 +173,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                 }
 
                 runOnUiThread(() -> {
+                    currentUserList = users;
                     userAdapter.setUsers(users);
                     showDropdown();
                 });
@@ -245,8 +263,6 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     }
 
     private void handleServerResponse(String response) {
-        System.out.println("Server response: " + response);
-
         if (response.toLowerCase().contains("success")) {
             etItemName.setText("");
             userSearchInput.setText("");
@@ -301,7 +317,8 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         Toast.makeText(CreateNewOrderActivity.this,
-                                "Error parsing restaurant info", Toast.LENGTH_SHORT).show();
+                                "Failed to parse restaurant info",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
             }
