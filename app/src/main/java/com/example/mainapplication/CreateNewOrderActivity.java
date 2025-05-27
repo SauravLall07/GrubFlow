@@ -203,7 +203,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     private void validateAndSubmitOrder(int userId) {
         String restaurantName = etRestaurantName.getText().toString().trim();
         String itemName = etItemName.getText().toString().trim();
-        String customerName = etCustomerName.getText().toString().trim();
+        String customerName = userSearchInput.getText().toString().trim();
         int quantity = numberPickerQty.getValue();
 
         if (restaurantName.isEmpty()) {
@@ -216,29 +216,27 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             return;
         }
 
-        if (customerName.isEmpty()) {
-            etCustomerName.setError("Customer name required");
+        if (customerName.isEmpty() || selectedUserId == -1) {
+            userSearchInput.setError("Please select a customer");
             return;
         }
 
         String status = "pending";
         boolean isPaid = false;
 
-        // Build request body
         RequestBody formBody = new FormBody.Builder()
                 .add("user_id", String.valueOf(userId))
-                .add("customer_id", String.valueOf(selectedCustomerId))
+                .add("customer_id", String.valueOf(selectedUserId))
                 .add("restaurant_name", restaurantName)
                 .add("item_name", itemName)
                 .add("quantity", String.valueOf(quantity))
                 .add("status", status)
                 .add("isPaid", isPaid ? "1" : "0")
-                //.add("customer_name", customerName)
-
                 .build();
 
         submitOrderToServer(formBody, userId);
     }
+
 
     private void submitOrderToServer(RequestBody formBody, int userId) {
         Request request = new Request.Builder()
