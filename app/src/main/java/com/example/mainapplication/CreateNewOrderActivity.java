@@ -5,16 +5,14 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -40,20 +39,17 @@ import okhttp3.Response;
 
 public class CreateNewOrderActivity extends AppCompatActivity {
 
-    private EditText etStaffName;
-    private AutoCompleteTextView etCustomerName;
-    private EditText etRestaurantName;
-    private EditText etItemName;
-    private EditText etTime;
+    private EditText etStaffName, etRestaurantName, etItemName, etTime;
     private NumberPicker numberPickerQty;
     private Button btnSubmitOrder;
     private RecyclerView userRecyclerView;
     private EditText userSearchInput;
+
     private UserAdapter userAdapter;
     private int selectedUserId = -1;
     private String selectedUserName = "";
     private boolean isDropdownVisible = false;
-    private int selectedCustomerId = -1;
+
     private final OkHttpClient client = new OkHttpClient();
     private static final String CREATE_ORDER_URL =
             "https://lamp.ms.wits.ac.za/home/s2801261/create_order.php";
@@ -63,7 +59,6 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_new_order);
 
-        // Initialize views
         etStaffName = findViewById(R.id.etStaffName);
         etRestaurantName = findViewById(R.id.etRestaurantName);
         etItemName = findViewById(R.id.etItemName);
@@ -73,7 +68,6 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         userRecyclerView = findViewById(R.id.userList);
         userSearchInput = findViewById(R.id.userSearchInput);
 
-        // Initialize RecyclerView
         userAdapter = new UserAdapter(user -> {
             selectedUserId = user.getId();
             selectedUserName = user.getName();
@@ -83,11 +77,9 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setAdapter(userAdapter);
 
-        // Configure number picker
         numberPickerQty.setMinValue(1);
         numberPickerQty.setMaxValue(100);
 
-        // Search functionality
         userSearchInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -95,26 +87,16 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                     hideDropdown();
                     return;
                 }
-
                 searchUsers(s.toString());
             }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override
-            public void afterTextChanged(Editable s) {}
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
         });
 
-        // Get logged-in user info
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         final int userId = prefs.getInt("user_id", -1);
         String staffName = prefs.getString("staff_name", "");
-
-        // Set staff name and time
-        etStaffName.setText(staffName);
-        fetchRestaurantForStaff(userId);
-        String currentTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        etTime.setText(currentTime);
 
         if (userId == -1) {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_LONG).show();
@@ -122,15 +104,16 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             return;
         }
 
+        etStaffName.setText(staffName);
+        fetchRestaurantForStaff(userId);
+
+        String currentTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        etTime.setText(currentTime);
+
         btnSubmitOrder.setOnClickListener(v -> validateAndSubmitOrder(userId));
     }
 
     private void searchUsers(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            hideDropdown();
-            return;
-        }
-
         new Thread(() -> {
             try {
                 String urlString = "https://lamp.ms.wits.ac.za/home/s2801261/search_customers.php";
@@ -153,15 +136,8 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                     JSONObject userJson = jsonArray.getJSONObject(i);
                     int id = userJson.getInt("id");
                     String name = userJson.getString("name");
-
-                    // Try to get email, but handle if it's missing
-                    String email = null;
-                    if (userJson.has("email")) {
-                        email = userJson.getString("email");
-                    }
-
-                    User user = new User(id, name, email);
-                    users.add(user);
+                    String email = userJson.optString("email", null);
+                    users.add(new User(id, name, email));
                 }
 
                 runOnUiThread(() -> {
@@ -170,7 +146,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Error fetching user data: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                handleNetworkError("Error fetching user data: " + e.getMessage());
             }
         }).start();
     }
@@ -199,7 +175,6 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         }
     }
 
-
     private void validateAndSubmitOrder(int userId) {
         String restaurantName = etRestaurantName.getText().toString().trim();
         String itemName = etItemName.getText().toString().trim();
@@ -210,19 +185,14 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             etRestaurantName.setError("Restaurant name required");
             return;
         }
-
         if (itemName.isEmpty()) {
             etItemName.setError("Item name required");
             return;
         }
-
         if (customerName.isEmpty() || selectedUserId == -1) {
             userSearchInput.setError("Please select a customer");
             return;
         }
-
-        String status = "pending";
-        boolean isPaid = false;
 
         RequestBody formBody = new FormBody.Builder()
                 .add("user_id", String.valueOf(userId))
@@ -230,15 +200,14 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                 .add("restaurant_name", restaurantName)
                 .add("item_name", itemName)
                 .add("quantity", String.valueOf(quantity))
-                .add("status", status)
-                .add("isPaid", isPaid ? "1" : "0")
+                .add("status", "pending")
+                .add("isPaid", "0")
                 .build();
 
-        submitOrderToServer(formBody, userId);
+        submitOrderToServer(formBody);
     }
 
-
-    private void submitOrderToServer(RequestBody formBody, int userId) {
+    private void submitOrderToServer(RequestBody formBody) {
         Request request = new Request.Builder()
                 .url(CREATE_ORDER_URL)
                 .post(formBody)
@@ -257,45 +226,32 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String responseBody = response.body().string();
-                runOnUiThread(() -> handleServerResponse(responseBody, userId));
+                runOnUiThread(() -> handleServerResponse(responseBody));
             }
         });
     }
 
-    private void handleServerResponse(String response, int userId) {
-        // Optional: Log server response
+    private void handleServerResponse(String response) {
         System.out.println("Server response: " + response);
 
         if (response.toLowerCase().contains("success")) {
-            runOnUiThread(() -> {
-                // Reset form
-                etItemName.setText("");
-                userSearchInput.setText("");
-                selectedCustomerId = -1;
-                numberPickerQty.setValue(1);
-                hideDropdown();
+            etItemName.setText("");
+            userSearchInput.setText("");
+            selectedUserId = -1;
+            numberPickerQty.setValue(1);
+            hideDropdown();
 
-                String newTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
-                etTime.setText(newTime);
+            String newTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
+            etTime.setText(newTime);
 
-                Toast.makeText(CreateNewOrderActivity.this,
-                        "Order created successfully!",
-                        Toast.LENGTH_LONG).show();
-
-                // Go back to previous screen (e.g., Staff Menu)
-                finish();  // Close this activity
-            });
-
+            Toast.makeText(this, "Order created successfully!", Toast.LENGTH_LONG).show();
+            finish();
         } else if (response.contains("Restaurant not found")) {
-            runOnUiThread(() -> etRestaurantName.setError("Restaurant not found in system"));
-
+            etRestaurantName.setError("Restaurant not found in system");
         } else {
-            runOnUiThread(() -> Toast.makeText(this,
-                    "Order failed: " + response,
-                    Toast.LENGTH_LONG).show());
+            Toast.makeText(this, "Order failed: " + response, Toast.LENGTH_LONG).show();
         }
     }
-
 
     private void fetchRestaurantForStaff(int userId) {
         RequestBody body = new FormBody.Builder()
@@ -311,8 +267,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() -> Toast.makeText(CreateNewOrderActivity.this,
-                        "Failed to load restaurant info",
-                        Toast.LENGTH_SHORT).show());
+                        "Failed to load restaurant info", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -325,7 +280,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                         if (json.getBoolean("success")) {
                             String restaurant = json.getString("restaurant");
                             etRestaurantName.setText(restaurant);
-                            etRestaurantName.setEnabled(false); // optional: lock it from editing
+                            etRestaurantName.setEnabled(false);
                         } else {
                             Toast.makeText(CreateNewOrderActivity.this,
                                     "No restaurant info found for staff.",
@@ -333,30 +288,10 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         Toast.makeText(CreateNewOrderActivity.this,
-                                "Error parsing restaurant info",
-                                Toast.LENGTH_SHORT).show();
+                                "Error parsing restaurant info", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
         });
     }
-
-    class Customer {
-        int id;
-        String name;
-
-        Customer(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        @Override
-        public String toString() {
-            return name; // AutoCompleteTextView will display name
-        }
-    }
-
-
 }
-
-
