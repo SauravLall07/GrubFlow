@@ -2,17 +2,29 @@ package com.example.mainapplication;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -25,12 +37,14 @@ import okhttp3.Response;
 public class CreateNewOrderActivity extends AppCompatActivity {
 
     private EditText etStaffName;
-    private EditText etCustomerName;
+    private AutoCompleteTextView etCustomerName;
     private EditText etRestaurantName;
     private EditText etItemName;
     private EditText etTime;
     private NumberPicker numberPickerQty;
     private Button btnSubmitOrder;
+
+    private int selectedCustomerId = -1;
 
     private final OkHttpClient client = new OkHttpClient();
     private static final String CREATE_ORDER_URL =
@@ -43,13 +57,66 @@ public class CreateNewOrderActivity extends AppCompatActivity {
 
         // Initialize views
         etStaffName = findViewById(R.id.etStaffName);
-        etCustomerName = findViewById(R.id.etCustomerName);
+        etCustomerName = findViewById(R.id.autoCompleteCustomer);
         etRestaurantName = findViewById(R.id.etRestaurantName);
         etItemName = findViewById(R.id.etItemName);
         etTime = findViewById(R.id.etTime);
         numberPickerQty = findViewById(R.id.numberPickerQty);
         btnSubmitOrder = findViewById(R.id.btnSubmitOrder);
 
+        AutoCompleteTextView customerAutoComplete = findViewById(R.id.autoCompleteCustomer);
+        List<Customer> customerList = new ArrayList<>();
+        ArrayAdapter<Customer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, customerList);
+        customerAutoComplete.setAdapter(adapter);
+
+        final int[] selectedCustomerId = {-1};
+
+        customerAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            Customer selected = (Customer) parent.getItemAtPosition(position);
+            selectedCustomerId[0] = selected.id;
+        });
+
+
+        customerAutoComplete.setThreshold(1);
+
+        customerAutoComplete.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() < 1) return;
+
+                String query = s.toString();
+                new Thread(() -> {
+                    try {
+                        URL url = new URL("http://yourdomain.com/search_customers.php?query=" + URLEncoder.encode(query, "UTF-8"));
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("GET");
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) sb.append(line);
+                        reader.close();
+
+                        JSONArray arr = new JSONArray(sb.toString());
+                        customerList.clear();
+                        for (int i = 0; i < arr.length(); i++) {
+                            JSONObject obj = arr.getJSONObject(i);
+                            int id = obj.getInt("id");
+                            String name = obj.getString("name");
+                            customerList.add(new Customer(id, name));
+                        }
+
+
+                        runOnUiThread(() -> adapter.notifyDataSetChanged());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+        });
         // Configure number picker
         numberPickerQty.setMinValue(1);
         numberPickerQty.setMaxValue(100);
@@ -108,6 +175,7 @@ public class CreateNewOrderActivity extends AppCompatActivity {
                 .add("status", status)
                 .add("isPaid", isPaid ? "1" : "0")
                 .add("customer_name", customerName)
+                .add("customer_id", String.valueOf(selectedCustomerId))
                 .build();
 
         submitOrderToServer(formBody, userId);
@@ -202,6 +270,22 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             }
         });
     }
+
+    class Customer {
+        int id;
+        String name;
+
+        Customer(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name; // AutoCompleteTextView will display name
+        }
+    }
+
 
 }
 

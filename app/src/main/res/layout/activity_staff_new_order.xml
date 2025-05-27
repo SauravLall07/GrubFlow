@@ -89,15 +89,20 @@
                     app:startIconDrawable="@drawable/ic_person"
                     app:startIconTint="@color/burgundy">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCustomerName"
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteCustomer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/black_ops_one"
-                        android:inputType="textPersonName"
+                        android:inputType="text"
                         android:textColor="@color/white"
-                        android:textCursorDrawable="@drawable/grey_cursor" />
+                        android:textCursorDrawable="@drawable/grey_cursor"
+                        android:popupBackground="@color/black" />
+
                 </com.google.android.material.textfield.TextInputLayout>
+
+
+
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilRestaurantName"
