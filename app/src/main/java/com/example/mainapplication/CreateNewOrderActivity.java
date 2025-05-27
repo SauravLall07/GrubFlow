@@ -263,26 +263,39 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     }
 
     private void handleServerResponse(String response, int userId) {
-        if (response.contains("success")) {
-            fetchRestaurantForStaff(userId);
-            etItemName.setText("");
-            etCustomerName.setText("");
-            numberPickerQty.setValue(1);
+        // Optional: Log server response
+        System.out.println("Server response: " + response);
 
-            String newTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
-            etTime.setText(newTime);
+        if (response.toLowerCase().contains("success")) {
+            runOnUiThread(() -> {
+                // Reset form
+                etItemName.setText("");
+                userSearchInput.setText("");
+                selectedCustomerId = -1;
+                numberPickerQty.setValue(1);
+                hideDropdown();
 
-            Toast.makeText(this,
-                    "Order created successfully!",
-                    Toast.LENGTH_LONG).show();
+                String newTime = new SimpleDateFormat("HH:mm dd-MM-yyyy", Locale.getDefault()).format(new Date());
+                etTime.setText(newTime);
+
+                Toast.makeText(CreateNewOrderActivity.this,
+                        "Order created successfully!",
+                        Toast.LENGTH_LONG).show();
+
+                // Go back to previous screen (e.g., Staff Menu)
+                finish();  // Close this activity
+            });
+
         } else if (response.contains("Restaurant not found")) {
-            etRestaurantName.setError("Restaurant not found in system");
+            runOnUiThread(() -> etRestaurantName.setError("Restaurant not found in system"));
+
         } else {
-            Toast.makeText(this,
+            runOnUiThread(() -> Toast.makeText(this,
                     "Order failed: " + response,
-                    Toast.LENGTH_LONG).show();
+                    Toast.LENGTH_LONG).show());
         }
     }
+
 
     private void fetchRestaurantForStaff(int userId) {
         RequestBody body = new FormBody.Builder()
