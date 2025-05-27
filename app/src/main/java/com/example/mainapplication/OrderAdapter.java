@@ -42,17 +42,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
-        if (order != null) {
-            holder.tvRestaurant.setText(order.getDetails());
-            holder.tvStatus.setText("Status: " + order.getStatus());
+        holder.tvRestaurant.setText(order.getDetails());
+        holder.tvStatus.setText("Status: " + order.getStatus());
 
-            boolean alreadyRated = order.isRated();
-            holder.btnThumbUp.setEnabled(!alreadyRated);
-            holder.btnThumbDown.setEnabled(!alreadyRated);
-
-            holder.btnThumbUp.setOnClickListener(v -> handleRatingClick(holder.getAdapterPosition(), true));
-            holder.btnThumbDown.setOnClickListener(v -> handleRatingClick(holder.getAdapterPosition(), false));
-        }
+        // Set visibility based on rating status
+        boolean isRated = order.isRated();
+        holder.btnThumbUp.setVisibility(isRated ? View.GONE : View.VISIBLE);
+        holder.btnThumbDown.setVisibility(isRated ? View.GONE : View.VISIBLE);
     }
 
     @Override
