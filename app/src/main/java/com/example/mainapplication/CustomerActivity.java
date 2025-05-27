@@ -64,8 +64,8 @@ public class CustomerActivity extends AppCompatActivity {
             if (userId == -1) {
                 return;
             }
-            Intent intent = new Intent(CustomerActivity.this, OrderHistoryActivity.class);
-            intent.putExtra("user_id", String.valueOf(userId));  // Pass user ID as string
-            startActivity(intent);
+         //   Intent intent = new Intent(CustomerActivity.this, OrderHistoryActivity.class);
+        //    intent.putExtra("user_id", String.valueOf(userId));  // Pass user ID as string
+         //   startActivity(intent);
         };
 }
