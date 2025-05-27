@@ -9,11 +9,18 @@
     </style>
 
     <!-- SPLASH THEME for Night Mode -->
-    <style name="Theme.MainApplication.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.MainApplication" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/dark_grey</item>
         <item name="android:statusBarColor">@color/dark_grey</item>
         <item name="android:navigationBarColor">@color/dark_grey</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
-
+    <!-- Splash screen only -->
+    <style name="Theme.MainApplication.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/dark_grey</item>
+        <item name="android:statusBarColor">@color/dark_grey</item>
+        <item name="android:navigationBarColor">@color/dark_grey</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowIsTranslucent">true</item> <!-- 👈 Here only -->
+    </style>
 </resources>
