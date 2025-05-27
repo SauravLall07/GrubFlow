@@ -39,9 +39,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import com.example.mainapplication.CreateNewOrderActivity;
-import com.google.android.material.navigation.NavigationView;
 
+import com.google.android.material.navigation.NavigationView;
 
 public class StaffMenuActivity extends AppCompatActivity {
 
@@ -56,20 +55,23 @@ public class StaffMenuActivity extends AppCompatActivity {
     private int selectedUserId = -1;
     private String selectedUserName = "";
 
+    // Cache last search result for dropdown to show on click
+    private List<User> currentUserList = new ArrayList<>();
+
+    // NEW: Flag to detect programmatic text change
+    private boolean isProgrammaticTextChange = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_menu);
 
-        // Initialize views
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         userSearchInput = findViewById(R.id.userSearchInput);
         userRecyclerView = findViewById(R.id.userList);
 
-        // Initialize drawer and toolbar
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
 
@@ -89,16 +91,19 @@ public class StaffMenuActivity extends AppCompatActivity {
             return false;
         });
 
+        // Adapter callback
         userAdapter = new UserAdapter(user -> {
             selectedUserId = user.getId();
             selectedUserName = user.getName();
-            userSearchInput.setText(selectedUserName);
 
-            // Clear user list to hide dropdown content immediately
+            // NEW: Programmatic text change block
+            isProgrammaticTextChange = true;
+            userSearchInput.setText(selectedUserName);
+            isProgrammaticTextChange = false;
+
             userAdapter.setUsers(new ArrayList<>());
             hideDropdown();
 
-            // Hide keyboard and clear focus from input
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             if (imm != null) {
                 imm.hideSoftInputFromWindow(userSearchInput.getWindowToken(), 0);
@@ -106,7 +111,35 @@ public class StaffMenuActivity extends AppCompatActivity {
             userSearchInput.clearFocus();
         });
 
-        initializeUserDropdown();
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        userRecyclerView.setAdapter(userAdapter);
+
+        userSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // NEW: Ignore programmatic text changes
+                if (isProgrammaticTextChange) return;
+
+                if (s.length() < 1) {
+                    hideDropdown();
+                    return;
+                }
+                searchUsers(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        userSearchInput.setOnClickListener(v -> {
+            if (!selectedUserName.isEmpty() && !isDropdownVisible() && !currentUserList.isEmpty()) {
+                userAdapter.setUsers(currentUserList);
+                showDropdown();
+            }
+        });
 
         Button btnNewOrder = findViewById(R.id.btnNewOrder);
         Button btnEditOrder = findViewById(R.id.btnEditOrder);
@@ -117,7 +150,7 @@ public class StaffMenuActivity extends AppCompatActivity {
         });
 
         btnEditOrder.setOnClickListener(v -> {
-            String name = selectedUserName; // Use selected name from dropdown
+            String name = selectedUserName;
             if (!name.isEmpty()) {
                 checkCustomerOrders(name);
             } else {
@@ -125,47 +158,10 @@ public class StaffMenuActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize navigation header
         View headerView = navigationView.getHeaderView(0);
         TextView tvMemberName = headerView.findViewById(R.id.tvMemberName);
         String memberName = getIntent().getStringExtra("staff_name");
-        if (memberName != null && !memberName.isEmpty()) {
-            tvMemberName.setText(memberName);
-        } else {
-            tvMemberName.setText("Staff");
-        }
-    }
-
-    private void initializeUserDropdown() {
-        userAdapter = new UserAdapter(user -> {
-            selectedUserId = user.getId();
-            selectedUserName = user.getName();
-            userSearchInput.setText(selectedUserName);
-            hideDropdown();
-        });
-        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        userRecyclerView.setAdapter(userAdapter);
-
-        userSearchInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // Not needed, but must be implemented
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() < 1) {
-                    hideDropdown();
-                    return;
-                }
-                searchUsers(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // Not needed, but must be implemented
-            }
-        });
+        tvMemberName.setText(memberName != null && !memberName.isEmpty() ? memberName : "Staff");
     }
 
     private void searchUsers(String query) {
@@ -196,14 +192,12 @@ public class StaffMenuActivity extends AppCompatActivity {
                     JSONObject userJson = jsonArray.getJSONObject(i);
                     int id = userJson.getInt("id");
                     String name = userJson.getString("name");
-                    String email = null;
-                    if (userJson.has("email")) {
-                        email = userJson.getString("email");
-                    }
+                    String email = userJson.optString("email", null);
                     users.add(new User(id, name, email));
                 }
 
                 runOnUiThread(() -> {
+                    currentUserList = users;
                     userAdapter.setUsers(users);
                     showDropdown();
                 });
@@ -226,14 +220,15 @@ public class StaffMenuActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isDropdownVisible() {
+        return userRecyclerView != null && userRecyclerView.getVisibility() == View.VISIBLE;
+    }
 
     private void logout() {
-
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
-
 
     private void checkCustomerOrders(String name) {
         OkHttpClient client = new OkHttpClient();

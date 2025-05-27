@@ -73,9 +73,6 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Customer Name Input -->
-
-
-        <!-- View Order History Button -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilCustomerName"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -93,9 +90,29 @@
             app:layout_constraintTop_toBottomOf="@id/btnNewOrder"
             app:startIconTint="@color/burgundy">
 
-            <include layout="@layout/user_dropdown" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/userSearchInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:fontFamily="@font/black_ops_one" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Dropdown RecyclerView (overlays input, hidden by default) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/userList"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="60dp"
+            android:visibility="gone"
+            android:background="@android:color/white"
+            app:layout_constraintStart_toStartOf="@id/tilCustomerName"
+            app:layout_constraintEnd_toEndOf="@id/tilCustomerName"
+            app:layout_constraintTop_toBottomOf="@id/tilCustomerName"
+            app:layout_constraintBottom_toTopOf="@id/btnEditOrder" />
+
+        <!-- View Order History Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEditOrder"
             android:layout_width="0dp"
@@ -109,9 +126,10 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="60dp"
             android:layout_marginEnd="60dp"
-            app:layout_constraintTop_toBottomOf="@id/tilCustomerName"
+            app:layout_constraintTop_toBottomOf="@id/userList"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Drawer Menu -->
