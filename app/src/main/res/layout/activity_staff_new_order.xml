@@ -83,21 +83,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Customer Name"
+                    android:hint=""
                     app:hintTextColor="@color/burgundy"
                     app:boxStrokeColor="@color/burgundy"
                     app:startIconDrawable="@drawable/ic_person"
                     app:startIconTint="@color/burgundy">
 
-                    <AutoCompleteTextView
-                        android:id="@+id/autoCompleteCustomer"
+                    <include
+                        android:id="@+id/userDropdown"
+                        layout="@layout/user_dropdown"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/black_ops_one"
-                        android:inputType="text"
-                        android:textColor="@color/white"
-                        android:textCursorDrawable="@drawable/grey_cursor"
-                        android:popupBackground="@color/black" />
+                        android:layout_height="wrap_content"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 

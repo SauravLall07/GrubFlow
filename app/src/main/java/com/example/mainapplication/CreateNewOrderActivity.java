@@ -4,9 +4,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
@@ -43,9 +47,13 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     private EditText etTime;
     private NumberPicker numberPickerQty;
     private Button btnSubmitOrder;
-
+    private RecyclerView userRecyclerView;
+    private EditText userSearchInput;
+    private UserAdapter userAdapter;
+    private int selectedUserId = -1;
+    private String selectedUserName = "";
+    private boolean isDropdownVisible = false;
     private int selectedCustomerId = -1;
-
     private final OkHttpClient client = new OkHttpClient();
     private static final String CREATE_ORDER_URL =
             "https://lamp.ms.wits.ac.za/home/s2801261/create_order.php";
@@ -57,70 +65,45 @@ public class CreateNewOrderActivity extends AppCompatActivity {
 
         // Initialize views
         etStaffName = findViewById(R.id.etStaffName);
-        etCustomerName = findViewById(R.id.autoCompleteCustomer);
         etRestaurantName = findViewById(R.id.etRestaurantName);
         etItemName = findViewById(R.id.etItemName);
         etTime = findViewById(R.id.etTime);
         numberPickerQty = findViewById(R.id.numberPickerQty);
         btnSubmitOrder = findViewById(R.id.btnSubmitOrder);
+        userRecyclerView = findViewById(R.id.userList);
+        userSearchInput = findViewById(R.id.userSearchInput);
 
-        AutoCompleteTextView customerAutoComplete = findViewById(R.id.autoCompleteCustomer);
-        List<Customer> customerList = new ArrayList<>();
-        ArrayAdapter<Customer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, customerList);
-        customerAutoComplete.setAdapter(adapter);
-
-        final int[] selectedCustomerId = {-1};
-
-        customerAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
-            Customer selected = (Customer) parent.getItemAtPosition(position);
-            selectedCustomerId[0] = selected.id;
+        // Initialize RecyclerView
+        userAdapter = new UserAdapter(user -> {
+            selectedUserId = user.getId();
+            selectedUserName = user.getName();
+            userSearchInput.setText(selectedUserName);
+            hideDropdown();
         });
+        userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        userRecyclerView.setAdapter(userAdapter);
 
-
-        customerAutoComplete.setThreshold(1);
-
-        customerAutoComplete.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() < 1) return;
-
-                String query = s.toString();
-                new Thread(() -> {
-                    try {
-                        URL url = new URL("http://yourdomain.com/search_customers.php?query=" + URLEncoder.encode(query, "UTF-8"));
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");
-
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        StringBuilder sb = new StringBuilder();
-                        String line;
-                        while ((line = reader.readLine()) != null) sb.append(line);
-                        reader.close();
-
-                        JSONArray arr = new JSONArray(sb.toString());
-                        customerList.clear();
-                        for (int i = 0; i < arr.length(); i++) {
-                            JSONObject obj = arr.getJSONObject(i);
-                            int id = obj.getInt("id");
-                            String name = obj.getString("name");
-                            customerList.add(new Customer(id, name));
-                        }
-
-
-                        runOnUiThread(() -> adapter.notifyDataSetChanged());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }).start();
-            }
-
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable s) {}
-        });
         // Configure number picker
         numberPickerQty.setMinValue(1);
         numberPickerQty.setMaxValue(100);
 
+        // Search functionality
+        userSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() < 1) {
+                    hideDropdown();
+                    return;
+                }
+
+                searchUsers(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         // Get logged-in user info
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
@@ -141,6 +124,81 @@ public class CreateNewOrderActivity extends AppCompatActivity {
 
         btnSubmitOrder.setOnClickListener(v -> validateAndSubmitOrder(userId));
     }
+
+    private void searchUsers(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            hideDropdown();
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                String urlString = "https://lamp.ms.wits.ac.za/home/s2801261/search_customers.php";
+                URL url = new URL(urlString + "?query=" + URLEncoder.encode(query, "UTF-8"));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                reader.close();
+
+                JSONArray jsonArray = new JSONArray(response.toString());
+                List<User> users = new ArrayList<>();
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject userJson = jsonArray.getJSONObject(i);
+                    int id = userJson.getInt("id");
+                    String name = userJson.getString("name");
+
+                    // Try to get email, but handle if it's missing
+                    String email = null;
+                    if (userJson.has("email")) {
+                        email = userJson.getString("email");
+                    }
+
+                    User user = new User(id, name, email);
+                    users.add(user);
+                }
+
+                runOnUiThread(() -> {
+                    userAdapter.setUsers(users);
+                    showDropdown();
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(this, "Error fetching user data: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+        }).start();
+    }
+
+    private void handleNetworkError(String errorMessage) {
+        runOnUiThread(() -> {
+            Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
+            hideDropdown();
+            if (userSearchInput != null) {
+                userSearchInput.setEnabled(true);
+            }
+        });
+    }
+
+    private void showDropdown() {
+        if (!isDropdownVisible) {
+            userRecyclerView.setVisibility(View.VISIBLE);
+            isDropdownVisible = true;
+        }
+    }
+
+    private void hideDropdown() {
+        if (isDropdownVisible) {
+            userRecyclerView.setVisibility(View.GONE);
+            isDropdownVisible = false;
+        }
+    }
+
 
     private void validateAndSubmitOrder(int userId) {
         String restaurantName = etRestaurantName.getText().toString().trim();
@@ -169,13 +227,14 @@ public class CreateNewOrderActivity extends AppCompatActivity {
         // Build request body
         RequestBody formBody = new FormBody.Builder()
                 .add("user_id", String.valueOf(userId))
+                .add("customer_id", String.valueOf(selectedCustomerId))
                 .add("restaurant_name", restaurantName)
                 .add("item_name", itemName)
                 .add("quantity", String.valueOf(quantity))
                 .add("status", status)
                 .add("isPaid", isPaid ? "1" : "0")
-                .add("customer_name", customerName)
-                .add("customer_id", String.valueOf(selectedCustomerId))
+                //.add("customer_name", customerName)
+
                 .build();
 
         submitOrderToServer(formBody, userId);
