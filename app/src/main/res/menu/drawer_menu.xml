@@ -4,4 +4,12 @@
         android:id="@+id/nav_logout"
         android:title="Log Out"
         android:icon="@drawable/ic_logout" />
+
+    <!-- Add a group at the bottom -->
+    <group android:id="@+id/footer_group">
+        <item
+            android:id="@+id/nav_footer"
+            android:title="Powered by SchemeShifters"
+            android:enabled="false" />
+    </group>
 </menu>
