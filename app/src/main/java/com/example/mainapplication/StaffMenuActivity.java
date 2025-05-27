@@ -6,6 +6,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -86,6 +87,23 @@ public class StaffMenuActivity extends AppCompatActivity {
                 return true;
             }
             return false;
+        });
+
+        userAdapter = new UserAdapter(user -> {
+            selectedUserId = user.getId();
+            selectedUserName = user.getName();
+            userSearchInput.setText(selectedUserName);
+
+            // Clear user list to hide dropdown content immediately
+            userAdapter.setUsers(new ArrayList<>());
+            hideDropdown();
+
+            // Hide keyboard and clear focus from input
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(userSearchInput.getWindowToken(), 0);
+            }
+            userSearchInput.clearFocus();
         });
 
         initializeUserDropdown();

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -72,7 +73,17 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             selectedUserId = user.getId();
             selectedUserName = user.getName();
             userSearchInput.setText(selectedUserName);
+
+            // Clear user list to hide dropdown content immediately
+            userAdapter.setUsers(new ArrayList<>());
             hideDropdown();
+
+            // Hide keyboard and clear focus from input
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(userSearchInput.getWindowToken(), 0);
+            }
+            userSearchInput.clearFocus();
         });
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setAdapter(userAdapter);
@@ -84,6 +95,10 @@ public class CreateNewOrderActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() < 1) {
+                    // Reset selected user when input cleared
+                    selectedUserId = -1;
+                    selectedUserName = "";
+                    userAdapter.setUsers(new ArrayList<>());
                     hideDropdown();
                     return;
                 }
@@ -169,10 +184,8 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     }
 
     private void hideDropdown() {
-        if (isDropdownVisible) {
-            userRecyclerView.setVisibility(View.GONE);
-            isDropdownVisible = false;
-        }
+        userRecyclerView.setVisibility(View.GONE);
+        isDropdownVisible = false;
     }
 
     private void validateAndSubmitOrder(int userId) {
