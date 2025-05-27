@@ -1,5 +1,6 @@
 package com.example.mainapplication;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,10 @@ public class OrderHistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = requireContext().getSharedPreferences("MyAppPrefs", getContext().MODE_PRIVATE);
+        customerName = prefs.getString("customer_name", "Guest");  // default "Guest" if not found
+
         if (getArguments() != null) {
-            customerName = getArguments().getString("customer_name");
             ordersJson = getArguments().getString("orders_json");
         }
     }

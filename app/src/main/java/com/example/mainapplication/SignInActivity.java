@@ -123,6 +123,8 @@ public class SignInActivity extends AppCompatActivity {
                                 intent = new Intent(SignInActivity.this, StaffMenuActivity.class);
                                 intent.putExtra("staff_name", name);
                             } else {
+                                globalEditor.putString("customer_name", name);
+                                globalEditor.apply();
                                 intent = new Intent(SignInActivity.this, CustomerActivity.class);
                             }
 
