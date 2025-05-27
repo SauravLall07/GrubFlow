@@ -13,11 +13,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 public class CustomerActivity extends AppCompatActivity {
-
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private OrderHistoryPagerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +62,37 @@ public class CustomerActivity extends AppCompatActivity {
             return false;
         });
 
+        tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
+
+        // Get customer data from intent
+        String customerName = getIntent().getStringExtra("customer_name");
+        String ordersJson = getIntent().getStringExtra("orders_json");
+
+        // Initialize adapter
+        adapter = new OrderHistoryPagerAdapter(this, customerName, ordersJson);
+        viewPager.setAdapter(adapter);
+
+        // Connect TabLayout with ViewPager
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    switch (position) {
+                        case 0:
+                            tab.setText("Order History");
+                            break;
+                        case 1:
+                            tab.setText("Restaurants");
+                            break;
+                    }
+                }).attach();
+
         //Button btnOrderHistory = findViewById(R.id.btnOrderHistory);
         //btnOrderHistory.setOnClickListener(v -> {
-            SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-            int userId = prefs.getInt("user_id", -1);
-            if (userId == -1) {
-                return;
-            }
+         //   SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+         //   int userId = prefs.getInt("user_id", -1);
+         //   if (userId == -1) {
+         //       return;
+         //   }
          //   Intent intent = new Intent(CustomerActivity.this, OrderHistoryActivity.class);
         //    intent.putExtra("user_id", String.valueOf(userId));  // Pass user ID as string
          //   startActivity(intent);

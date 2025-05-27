@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -23,13 +24,18 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
+    private List<Order> orderList;
+    private Context context;
 
-    private final List<Order> orderList;
-    private final Context context;
-
-    public OrderAdapter(Context context, List<Order> orders) {
+    public OrderAdapter(Context context) {
         this.context = context;
+        this.orderList = new ArrayList<>();
+    }
+
+    // Method to update the orders list
+    public void setOrders(List<Order> orders) {
         this.orderList = orders;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -49,6 +55,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         boolean isRated = order.isRated();
         holder.btnThumbUp.setVisibility(isRated ? View.GONE : View.VISIBLE);
         holder.btnThumbDown.setVisibility(isRated ? View.GONE : View.VISIBLE);
+
+        // Set click listeners for rating buttons
+        holder.btnThumbUp.setOnClickListener(v -> handleRatingClick(position, true));
+        holder.btnThumbDown.setOnClickListener(v -> handleRatingClick(position, false));
     }
 
     @Override

@@ -16,7 +16,7 @@ public class EditOrderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_history);
+        setContentView(R.layout.fragment_order_history);
 
         // Initialize views
         tvCustomerName = findViewById(R.id.tvCustomerName);
@@ -38,7 +38,7 @@ public class EditOrderActivity extends AppCompatActivity {
             rvOrders.setVisibility(View.VISIBLE);
 
             rvOrders.setLayoutManager(new LinearLayoutManager(this));
-            rvOrders.setAdapter(new OrderAdapter(this, orders));
+            rvOrders.setAdapter(new OrderAdapter(this));
         }
     }
 

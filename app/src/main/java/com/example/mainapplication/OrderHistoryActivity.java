@@ -35,7 +35,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_history);
+        setContentView(R.layout.fragment_order_history);
 
         rvOrders = findViewById(R.id.rvOrders);
         tvOrderHistory = findViewById(R.id.tvOrderHistory);
@@ -43,7 +43,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         // Initialize RecyclerView
         rvOrders.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OrderAdapter(this, orderList);
+        adapter = new OrderAdapter(this);
         rvOrders.setAdapter(adapter);
 
         // Get customer name from intent
@@ -95,11 +95,13 @@ public class OrderHistoryActivity extends AppCompatActivity {
                             for (int i = 0; i < orders.length(); i++) {
                                 JSONObject o = orders.getJSONObject(i);
                                 orderList.add(new Order(
-                                        o.getString("id"),
-                                        o.getString("details"),
+                                        o.getString("orderId"),
+                                        o.getString("restaurant_name"),
+                                        o.getString("item_name"),
+                                        o.getInt("quantity"),
                                         o.getString("status"),
-                                        o.getBoolean("is_paid"),
-                                        o.getBoolean("is_rated")
+                                        o.getBoolean("isPaid"),
+                                        o.getString("time")
                                 ));
                             }
 

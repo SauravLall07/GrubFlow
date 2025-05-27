@@ -12,4 +12,6 @@
 <color name="burgundy" >#800020</color>
     <color name="grey">#757575</color>
     <color name="dark_grey">#212121</color>
+    <color name="green">#00CE09</color>
+    <color name="red">#F44336</color>
 </resources>
