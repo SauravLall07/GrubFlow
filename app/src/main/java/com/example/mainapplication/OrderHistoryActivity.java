@@ -38,19 +38,24 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         rvOrders = findViewById(R.id.rvOrders);
         tvOrderHistory = findViewById(R.id.tvOrderHistory);
-        rvOrders.setLayoutManager(new LinearLayoutManager(this));
+        TextView tvCustomerName = findViewById(R.id.tvCustomerName);
 
-        adapter = new OrderAdapter(this, orderList);
-        rvOrders.setAdapter(adapter);
-
-        // Get user ID from Intent extras
-        userId = getIntent().getStringExtra("user_id");
-        if (userId == null || userId.isEmpty()) {
-            tvOrderHistory.setText("No user ID found.");
-            return;
+        // Get customer name from intent
+        String customerName = getIntent().getStringExtra("customer_name");
+        if (customerName != null) {
+            tvCustomerName.setText("Customer: " + customerName);
         }
 
-        fetchOrders();
+
+        // Rest of your existing order loading code...
+        userId = getIntent().getStringExtra("user_id");
+        if (userId != null && !userId.isEmpty()) {
+            fetchOrders();
+        } else {
+            tvOrderHistory.setText("No user ID found");
+            tvOrderHistory.setVisibility(View.VISIBLE);
+            rvOrders.setVisibility(View.GONE);
+        }
     }
 
 

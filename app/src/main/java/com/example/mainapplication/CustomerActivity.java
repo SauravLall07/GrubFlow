@@ -57,8 +57,8 @@ public class CustomerActivity extends AppCompatActivity {
             return false;
         });
 
-        Button btnOrderHistory = findViewById(R.id.btnOrderHistory);
-        btnOrderHistory.setOnClickListener(v -> {
+        //Button btnOrderHistory = findViewById(R.id.btnOrderHistory);
+        //btnOrderHistory.setOnClickListener(v -> {
             SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
             int userId = prefs.getInt("user_id", -1);
             if (userId == -1) {
@@ -67,6 +67,5 @@ public class CustomerActivity extends AppCompatActivity {
             Intent intent = new Intent(CustomerActivity.this, OrderHistoryActivity.class);
             intent.putExtra("user_id", String.valueOf(userId));  // Pass user ID as string
             startActivity(intent);
-        });
-    }
+        };
 }
