@@ -1,5 +1,6 @@
 package com.example.mainapplication;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -16,18 +17,19 @@ public class EditOrderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_order_history);
+        setContentView(R.layout.activity_edit_order_history);
 
         // Initialize views
         tvCustomerName = findViewById(R.id.tvCustomerName);
-        tvOrderHistory = findViewById(R.id.tvOrderHistory);
+        tvOrderHistory = findViewById(R.id.rvOrders);
         rvOrders = findViewById(R.id.rvOrders);
 
-        // Get customer name from intent
-        String customerName = getIntent().getStringExtra("customer_name");
+        // Load customer name from SharedPreferences (not from Intent)
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+        String customerName = prefs.getString("customer_name", "Unknown Customer");  // <-- LOAD from shared prefs
         tvCustomerName.setText("Customer: " + customerName);
 
-        // Dummy example: Replace with real order loading
+        // Fetch orders for this customer (replace with real API/db call)
         List<Order> orders = fetchOrdersForCustomer(customerName);
 
         if (orders.isEmpty()) {
@@ -42,10 +44,9 @@ public class EditOrderActivity extends AppCompatActivity {
         }
     }
 
-    // Replace this with a real API or DB query
+    // Dummy method - replace with your actual data fetching logic
     private List<Order> fetchOrdersForCustomer(String name) {
-        // return emptyList() to simulate "no orders"
-        // return Arrays.asList("Pizza - Large", "Burger - Medium") for fake orders
+        // Return empty list simulating no orders for this example
         return java.util.Collections.emptyList();
     }
 }
