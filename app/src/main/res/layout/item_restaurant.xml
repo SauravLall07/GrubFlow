@@ -20,8 +20,8 @@
             android:id="@+id/ivRestaurant"
             android:layout_width="match_parent"
             android:layout_height="275dp"
-            android:background="@android:color/transparent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircleImageView"
             app:strokeColor="@color/white"
             app:strokeWidth="2dp" />
 

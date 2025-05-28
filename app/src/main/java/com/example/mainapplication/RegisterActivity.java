@@ -229,8 +229,7 @@ public class RegisterActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select Restaurant");
 
-        // Dummy data — replace with real restaurant list from API
-        String[] restaurants = {"Burger House", "Sushi Corner", "Pizza Palace", "McDonald's", "KFC", "Nando's"};
+        String[] restaurants = {"Burger House", "Sushi Corner", "Pizza Palace", "McGrub", "Hen House", "Peri Grillz"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, restaurants);
 
         // Add search bar
