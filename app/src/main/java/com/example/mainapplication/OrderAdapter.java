@@ -7,9 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -97,27 +101,47 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e("Rating", "Failed: " + e.getMessage());
                 if (context instanceof android.app.Activity) {
-                    ((android.app.Activity) context).runOnUiThread(() -> notifyItemChanged(position));
+                    ((android.app.Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context, "Failed to submit rating", Toast.LENGTH_SHORT).show());
                 }
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    order.setRated(true);
-                    if (context instanceof android.app.Activity) {
-                        ((android.app.Activity) context).runOnUiThread(() -> notifyItemChanged(position));
+                String responseStr = response.body().string();
+                Log.d("RatingResponse", responseStr);
+
+                boolean success = false;
+                try {
+                    if (response.isSuccessful()) {
+                        JSONObject json = new JSONObject(responseStr);
+                        success = json.optBoolean("success", false);
+                    } else {
+                        Log.e("Rating", "Server Error: " + response.code());
                     }
-                } else {
-                    Log.e("Rating", "Error: " + response.code());
-                    if (context instanceof android.app.Activity) {
-                        ((android.app.Activity) context).runOnUiThread(() -> notifyItemChanged(position));
-                    }
+                } catch (JSONException e) {
+                    Log.e("Rating", "JSON error: " + e.getMessage());
                 }
+
+                boolean finalSuccess = success;
+                if (context instanceof android.app.Activity) {
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        if (finalSuccess) {
+                            order.setRated(true);
+                            notifyItemChanged(position); // triggers rebind which hides thumbs
+                            Toast.makeText(context, "Rating submitted!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Rating failed!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
                 response.close();
             }
         });
     }
+
+
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
         TextView tvOrderId, tvRestaurant, tvDetails, tvStatus, tvPaid;
