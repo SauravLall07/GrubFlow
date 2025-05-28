@@ -24,9 +24,8 @@ public class EditOrderActivity extends AppCompatActivity {
         tvOrderHistory = findViewById(R.id.rvOrders);
         rvOrders = findViewById(R.id.rvOrders);
 
-        // Load customer name from SharedPreferences (not from Intent)
-        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-        String customerName = prefs.getString("customer_name", "Unknown Customer");  // <-- LOAD from shared prefs
+        String customerName = getIntent().getStringExtra("customer_name");
+        if (customerName == null) customerName = "Unknown Customer";
         tvCustomerName.setText("Customer: " + customerName);
 
         // Fetch orders for this customer (replace with real API/db call)
@@ -40,7 +39,7 @@ public class EditOrderActivity extends AppCompatActivity {
             rvOrders.setVisibility(View.VISIBLE);
 
             rvOrders.setLayoutManager(new LinearLayoutManager(this));
-            rvOrders.setAdapter(new OrderAdapter(this));
+            rvOrders.setAdapter(new OrderAdapter(this,orders));
         }
     }
 

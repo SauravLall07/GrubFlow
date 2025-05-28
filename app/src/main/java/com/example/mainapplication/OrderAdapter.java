@@ -27,9 +27,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private List<Order> orderList;
     private Context context;
 
-    public OrderAdapter(Context context) {
+    public OrderAdapter(Context context, List<Order> orders) {
         this.context = context;
-        this.orderList = new ArrayList<>();
+        this.orderList = orders != null ? orders : new ArrayList<>();
     }
 
     // Method to update the orders list

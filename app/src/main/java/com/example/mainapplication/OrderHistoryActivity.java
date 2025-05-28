@@ -43,7 +43,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         // Initialize RecyclerView
         rvOrders.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OrderAdapter(this);
+        adapter = new OrderAdapter(this, orderList);
         rvOrders.setAdapter(adapter);
 
         // Get customer name from intent

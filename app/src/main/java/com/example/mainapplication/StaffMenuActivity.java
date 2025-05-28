@@ -265,7 +265,7 @@ public class StaffMenuActivity extends AppCompatActivity {
                                 return;
                             }
 
-                            Intent intent = new Intent(StaffMenuActivity.this, OrderHistoryActivity.class);
+                            Intent intent = new Intent(StaffMenuActivity.this, EditOrderActivity.class);
                             intent.putExtra("customer_name", name);
                             intent.putExtra("orders_json", json.getJSONArray("orders").toString());
                             startActivity(intent);
