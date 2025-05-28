@@ -13,14 +13,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:scaleType="centerInside"
         android:padding="16dp">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivRestaurant"
             android:layout_width="match_parent"
             android:layout_height="275dp"
-            android:background="@drawable/logo_background"
-            app:shapeAppearanceOverlay="@style/CircleImageView"
+            android:background="@android:color/transparent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.MediumComponent"
             app:strokeColor="@color/white"
             app:strokeWidth="2dp" />
 
