@@ -11,9 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/wallpaper4"
+        android:id="@+id/orderHistoryContentLayout"
         android:padding="16dp">
 
-        <!-- Logo (unchanged) -->
+        <!-- Logo -->
         <ImageView
             android:id="@+id/ivLogo"
             android:layout_width="100dp"
@@ -38,7 +39,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Order History RecyclerView -->
+        <!-- Order History Message (visible when no orders) -->
+        <TextView
+            android:id="@+id/tvOrderHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No order history available."
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tvCustomerName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvOrders"
             android:layout_width="0dp"
@@ -46,7 +61,7 @@
             android:layout_marginTop="12dp"
             android:clipToPadding="false"
             android:paddingBottom="12dp"
-            app:layout_constraintTop_toBottomOf="@id/tvCustomerName"
+            app:layout_constraintTop_toBottomOf="@id/tvOrderHistory"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

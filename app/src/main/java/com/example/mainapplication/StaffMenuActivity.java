@@ -257,20 +257,22 @@ public class StaffMenuActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         Log.d("SERVER_RESPONSE", responseString);
                         try {
-                            JSONArray jsonArray = new JSONArray(responseString);
-                            JSONObject json = jsonArray.getJSONObject(0);
+                            JSONObject json = new JSONObject(responseString);
 
                             if (!json.getBoolean("success")) {
-                                etCustomerName.setError(json.getString("message"));
+                                Toast.makeText(StaffMenuActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
                                 return;
                             }
 
+                            JSONArray ordersArray = json.getJSONArray("orders");
+
                             Intent intent = new Intent(StaffMenuActivity.this, EditOrderActivity.class);
                             intent.putExtra("customer_name", name);
-                            intent.putExtra("orders_json", json.getJSONArray("orders").toString());
+                            intent.putExtra("orders_json", ordersArray.toString());
                             startActivity(intent);
 
                         } catch (Exception e) {
+                            Log.e("RESPONSE_ERROR", "Parsing error", e);
                             Toast.makeText(StaffMenuActivity.this, "Response parsing error", Toast.LENGTH_SHORT).show();
                         }
                     });
