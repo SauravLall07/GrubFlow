@@ -2,6 +2,8 @@ package com.example.mainapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -66,6 +68,11 @@ public class CustomerActivity extends AppCompatActivity {
         // Get customer data from intent
         String customerName = getIntent().getStringExtra("customer_name");
         String ordersJson = getIntent().getStringExtra("orders_json");
+
+        // Set customer name in toolbar header
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvMemberName = headerView.findViewById(R.id.tvMemberName);
+        tvMemberName.setText(customerName);
 
         // Initialize adapter
         adapter = new OrderHistoryPagerAdapter(this, customerName, ordersJson);
