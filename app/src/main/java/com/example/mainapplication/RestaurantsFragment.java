@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,30 +27,33 @@ import java.util.List;
 
 public class RestaurantsFragment extends Fragment {
     private RecyclerView rvRestaurants;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RestaurantAdapter restaurantAdapter;
     private View view;
+
     public static RestaurantsFragment newInstance() {
         return new RestaurantsFragment();
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_restaurants, container, false);
 
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         rvRestaurants = view.findViewById(R.id.rvRestaurants);
 
         // Initialize adapter with an anonymous click listener
         restaurantAdapter = new RestaurantAdapter(new RestaurantAdapter.OnRestaurantClickListener() {
             @Override
             public void onRestaurantClick(Restaurant restaurant) {
-                // Handle restaurant click here
                 Toast.makeText(getContext(), "Selected: " + restaurant.getName(), Toast.LENGTH_SHORT).show();
-
-                // You can also start a new activity or fragment here
-                // Intent intent = new Intent(getContext(), RestaurantDetailActivity.class);
-                // intent.putExtra("restaurant_id", restaurant.getId());
-                // startActivity(intent);
             }
+        });
+
+        // Set up SwipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refreshRestaurants();
         });
 
         setupRecyclerView();
@@ -86,48 +90,63 @@ public class RestaurantsFragment extends Fragment {
                             int numRatings = obj.getInt("num_of_ratings");
                             String imageUrl = obj.getString("image_url");
 
-                            // Fill the rest with default/placeholder values
                             Restaurant restaurant = new Restaurant(
                                     id,
                                     name,
-                                    "Great food at great prices", // description
+                                    "Great food at great prices",
                                     imageUrl,
                                     aveRating,
                                     numRatings,
                                     location,
                                     contact,
-                                    "9:00 AM - 9:00 PM", // openingHours
-                                    true, // isOpen
-                                    "1.2 km" // distance
+                                    "9:00 AM - 9:00 PM",
+                                    true,
+                                    "1.2 km"
                             );
 
                             restaurants.add(restaurant);
                         }
 
-                        restaurantAdapter.setRestaurants(restaurants);
-
-                        // Show/hide empty message
-                        TextView tvNoRestaurants = view.findViewById(R.id.tvNoRestaurants);
-                        if (restaurants.isEmpty()) {
-                            tvNoRestaurants.setVisibility(View.VISIBLE);
-                            rvRestaurants.setVisibility(View.GONE);
-                        } else {
-                            tvNoRestaurants.setVisibility(View.GONE);
-                            rvRestaurants.setVisibility(View.VISIBLE);
-                        }
+                        // Update UI on main thread
+                        requireActivity().runOnUiThread(() -> {
+                            restaurantAdapter.setRestaurants(restaurants);
+                            updateEmptyView(restaurants);
+                            swipeRefreshLayout.setRefreshing(false);
+                        });
 
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(getContext(), "Error parsing restaurant data", Toast.LENGTH_SHORT).show();
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(getContext(), "Error parsing restaurant data", Toast.LENGTH_SHORT).show();
+                            swipeRefreshLayout.setRefreshing(false);
+                        });
                     }
                 },
                 error -> {
                     error.printStackTrace();
-                    Toast.makeText(getContext(), "Failed to load restaurants", Toast.LENGTH_SHORT).show();
+                    requireActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Failed to load restaurants", Toast.LENGTH_SHORT).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    });
                 }
         );
 
         queue.add(jsonArrayRequest);
     }
 
+    private void updateEmptyView(List<Restaurant> restaurants) {
+        TextView tvNoRestaurants = view.findViewById(R.id.tvNoRestaurants);
+        if (restaurants.isEmpty()) {
+            tvNoRestaurants.setVisibility(View.VISIBLE);
+            rvRestaurants.setVisibility(View.GONE);
+        } else {
+            tvNoRestaurants.setVisibility(View.GONE);
+            rvRestaurants.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void refreshRestaurants() {
+        swipeRefreshLayout.setRefreshing(true);
+        loadRestaurants();
+    }
 }
