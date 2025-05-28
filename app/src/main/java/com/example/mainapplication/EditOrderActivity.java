@@ -18,7 +18,7 @@ public class EditOrderActivity extends AppCompatActivity {
 
     private TextView tvCustomerName, tvOrderHistory;
     private RecyclerView rvOrders;
-    private OrderAdapter orderAdapter;
+    private StaffOrderAdapter staffOrderAdapter;  // fix variable name to camelCase
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +44,8 @@ public class EditOrderActivity extends AppCompatActivity {
 
         // Setup RecyclerView and Adapter
         rvOrders.setLayoutManager(new LinearLayoutManager(this));
-        orderAdapter = new OrderAdapter(this);
-        rvOrders.setAdapter(orderAdapter);
+        staffOrderAdapter = new StaffOrderAdapter(this);  // instantiate the correct adapter
+        rvOrders.setAdapter(staffOrderAdapter);           // set correct adapter
 
         // Parse and load orders
         List<Order> orders = parseOrdersFromJson(ordersJson, customerName);
@@ -57,7 +57,7 @@ public class EditOrderActivity extends AppCompatActivity {
         } else {
             tvOrderHistory.setVisibility(View.GONE);
             rvOrders.setVisibility(View.VISIBLE);
-            orderAdapter.setOrders(orders);
+            staffOrderAdapter.setOrders(orders);          // use correct adapter instance here
         }
     }
 
@@ -66,7 +66,6 @@ public class EditOrderActivity extends AppCompatActivity {
         if (json == null || json.trim().isEmpty()) return orders;
 
         try {
-            // Check if json starts with '[' (JSONArray) or '{' (JSONObject)
             json = json.trim();
             if (json.startsWith("[")) {
                 JSONArray jsonArray = new JSONArray(json);
@@ -75,16 +74,13 @@ public class EditOrderActivity extends AppCompatActivity {
                     orders.add(parseOrderObject(obj, customerName));
                 }
             } else if (json.startsWith("{")) {
-                // In case the response is a JSONObject (single order or wrapper)
                 JSONObject obj = new JSONObject(json);
-                // If it has a key that holds orders, try to extract array
                 if (obj.has("orders")) {
                     JSONArray jsonArray = obj.getJSONArray("orders");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         orders.add(parseOrderObject(jsonArray.getJSONObject(i), customerName));
                     }
                 } else {
-                    // Assume single order object
                     orders.add(parseOrderObject(obj, customerName));
                 }
             } else {
@@ -114,5 +110,4 @@ public class EditOrderActivity extends AppCompatActivity {
         return new Order(orderId, restaurantName, details, status,
                 isPaid, orderTime, rating, isRated, customerName);
     }
-
 }
