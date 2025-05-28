@@ -127,7 +127,7 @@ public class SignInActivity extends AppCompatActivity {
                                 globalEditor.apply();
                                 intent = new Intent(SignInActivity.this, CustomerActivity.class);
                                 intent.putExtra("customer_name", name);
-                            }SS
+                            }
 
                             // Remember-me prefs
                             SharedPreferences.Editor editor = getSharedPreferences("loginPrefs", MODE_PRIVATE).edit();
