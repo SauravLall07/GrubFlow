@@ -33,15 +33,17 @@ public class OrderHistoryFragment extends Fragment {
         return fragment;
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences prefs = requireContext().getSharedPreferences("MyAppPrefs", getContext().MODE_PRIVATE);
-        customerName = prefs.getString("customer_name", "Guest");  // default "Guest" if not found
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("MyAppPrefs", requireContext().MODE_PRIVATE);
+        customerName = prefs.getString("customer_name", "Guest");
 
         if (getArguments() != null) {
-            ordersJson = getArguments().getString("orders_json");
+            ordersJson = getArguments().getString("orders_json", "[]"); // Default to empty array
+            // If provided, override customerName with argument
+            customerName = getArguments().getString("customer_name", customerName);
         }
     }
 
@@ -63,8 +65,8 @@ public class OrderHistoryFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        rvOrders.setLayoutManager(new LinearLayoutManager(getContext()));
-        orderAdapter = new OrderAdapter(getContext());
+        rvOrders.setLayoutManager(new LinearLayoutManager(requireContext()));
+        orderAdapter = new OrderAdapter(requireContext());
         rvOrders.setAdapter(orderAdapter);
     }
 
@@ -72,24 +74,34 @@ public class OrderHistoryFragment extends Fragment {
         try {
             JSONArray orders = new JSONArray(ordersJson);
             List<Order> orderList = new ArrayList<>();
+
             for (int i = 0; i < orders.length(); i++) {
                 JSONObject order = orders.getJSONObject(i);
                 orderList.add(new Order(
-                        order.getString("orderId"),
-                        order.getString("restaurant_name"),
-                        order.getString("item_name"),
-                        order.getInt("quantity"),
-                        order.getString("status"),
-                        order.getBoolean("isPaid"),
-                        order.getString("time")
+                        order.optString("orderId"),
+                        order.optString("restaurant_name"),
+                        order.optString("item_name"),
+                        order.optInt("quantity"),
+                        order.optString("status"),
+                        order.optBoolean("isPaid"),
+                        order.optString("time")
                 ));
             }
-            orderAdapter.setOrders(orderList);
-            rvOrders.setVisibility(View.VISIBLE);
-            tvNoOrders.setVisibility(View.GONE);
+
+            if (orderList.isEmpty()) {
+                rvOrders.setVisibility(View.GONE);
+                tvNoOrders.setText("No order history available.");
+                tvNoOrders.setVisibility(View.VISIBLE);
+            } else {
+                orderAdapter.setOrders(orderList);
+                rvOrders.setVisibility(View.VISIBLE);
+                tvNoOrders.setVisibility(View.GONE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             rvOrders.setVisibility(View.GONE);
+            tvNoOrders.setText("Error loading order history.");
             tvNoOrders.setVisibility(View.VISIBLE);
         }
     }

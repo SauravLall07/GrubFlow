@@ -27,6 +27,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
     private RecyclerView rvOrders;
     private TextView tvOrderHistory;
+    private TextView tvCustomerName;
     private OrderAdapter adapter;
     private final OkHttpClient client = new OkHttpClient();
     private String userId;
@@ -34,11 +35,11 @@ public class OrderHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_order_history);
+        setContentView(R.layout.fragment_order_history); // ✅ Correct layout
 
         rvOrders = findViewById(R.id.rvOrders);
         tvOrderHistory = findViewById(R.id.tvOrderHistory);
-        TextView tvCustomerName = findViewById(R.id.tvCustomerName);
+        tvCustomerName = findViewById(R.id.tvCustomerName);
 
         // Setup RecyclerView
         rvOrders.setLayoutManager(new LinearLayoutManager(this));
@@ -47,8 +48,10 @@ public class OrderHistoryActivity extends AppCompatActivity {
 
         // Get customer name
         String customerName = getIntent().getStringExtra("customer_name");
-        if (customerName != null) {
+        if (customerName != null && !customerName.isEmpty()) {
             tvCustomerName.setText("Customer: " + customerName);
+        } else {
+            tvCustomerName.setText("Customer: Guest");
         }
 
         // Get user ID
@@ -56,9 +59,7 @@ public class OrderHistoryActivity extends AppCompatActivity {
         if (userId != null && !userId.isEmpty()) {
             fetchOrders();
         } else {
-            tvOrderHistory.setText("No user ID found");
-            tvOrderHistory.setVisibility(View.VISIBLE);
-            rvOrders.setVisibility(View.GONE);
+            showError("No user ID found");
         }
     }
 
@@ -88,31 +89,29 @@ public class OrderHistoryActivity extends AppCompatActivity {
                         List<Order> orderList = new ArrayList<>();
 
                         for (int i = 0; i < orders.length(); i++) {
-                            JSONObject o = orders.getJSONObject(i);
+                            JSONObject order = orders.getJSONObject(i);
                             orderList.add(new Order(
-                                    o.getString("orderId"),
-                                    o.getString("restaurant_name"),
-                                    o.getString("item_name"),
-                                    o.getInt("quantity"),
-                                    o.getString("status"),
-                                    o.getBoolean("isPaid"),
-                                    o.getString("time")
+                                    order.optString("orderId"),
+                                    order.optString("restaurant_name"),
+                                    order.optString("item_name"),
+                                    order.optInt("quantity"),
+                                    order.optString("status"),
+                                    order.optBoolean("isPaid"),
+                                    order.optString("time")
                             ));
                         }
 
                         runOnUiThread(() -> {
                             if (orderList.isEmpty()) {
-                                tvOrderHistory.setText("No order history available");
-                                tvOrderHistory.setVisibility(View.VISIBLE);
-                                rvOrders.setVisibility(View.GONE);
+                                showError("No order history available");
                             } else {
-                                adapter.setOrders(orderList); // ✅ Proper method to update data
+                                adapter.setOrders(orderList);
                                 tvOrderHistory.setVisibility(View.GONE);
                                 rvOrders.setVisibility(View.VISIBLE);
                             }
                         });
                     } else {
-                        showError(json.getString("message"));
+                        showError(json.optString("message", "Something went wrong."));
                     }
                 } catch (Exception e) {
                     showError("Error parsing response.");
