@@ -6,13 +6,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 public class CustomerPagerAdapter extends FragmentStateAdapter {
-    private final String customerName;
-    private final String ordersJson;
 
-    public CustomerPagerAdapter(@NonNull FragmentActivity fragmentActivity, String customerName, String ordersJson) {
+    public CustomerPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
-        this.customerName = customerName;
-        this.ordersJson = ordersJson;
     }
 
     @NonNull
@@ -20,9 +16,9 @@ public class CustomerPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return OrderHistoryFragment.newInstance(customerName, ordersJson);
+                return new OrderHistoryFragment(); // OrderHistory will fetch its own data
             case 1:
-                return RestaurantsFragment.newInstance();
+                return RestaurantsFragment.newInstance(); // Static method for creating fragment
             default:
                 throw new IllegalArgumentException("Invalid position: " + position);
         }

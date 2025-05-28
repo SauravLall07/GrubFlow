@@ -1,5 +1,6 @@
 package com.example.mainapplication;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,37 +15,50 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class OrderHistoryFragment extends Fragment {
+
     private RecyclerView rvOrders;
     private TextView tvNoOrders;
-    private String customerName;
-    private String ordersJson;
+    private TextView tvCustomerName;
     private OrderAdapter orderAdapter;
 
-    public static OrderHistoryFragment newInstance(String customerName, String ordersJson) {
-        OrderHistoryFragment fragment = new OrderHistoryFragment();
-        Bundle args = new Bundle();
-        args.putString("customer_name", customerName);
-        args.putString("orders_json", ordersJson);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private final OkHttpClient client = new OkHttpClient();
+    private String userId;
+    private String customerName;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SharedPreferences prefs = requireContext().getSharedPreferences("MyAppPrefs", requireContext().MODE_PRIVATE);
-        customerName = prefs.getString("customer_name", "Guest");
+        // Use getActivity().getSharedPreferences(...) safely with Context.MODE_PRIVATE
+        SharedPreferences prefs = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
 
-        if (getArguments() != null) {
-            ordersJson = getArguments().getString("orders_json", "[]"); // Default to empty array
-            // If provided, override customerName with argument
-            customerName = getArguments().getString("customer_name", customerName);
+        // To avoid ClassCastException, check if user_id is stored as String or int and read accordingly
+        if (prefs.contains("user_id")) {
+            try {
+                // Try getString first
+                userId = prefs.getString("user_id", null);
+            } catch (ClassCastException e) {
+                // If ClassCastException, try getInt and convert to string
+                int userIdInt = prefs.getInt("user_id", -1);
+                userId = userIdInt == -1 ? null : String.valueOf(userIdInt);
+            }
         }
+
+        // For customerName just read as string (default "Guest")
+        customerName = prefs.getString("customer_name", "Guest");
     }
 
     @Override
@@ -54,72 +68,101 @@ public class OrderHistoryFragment extends Fragment {
 
         rvOrders = view.findViewById(R.id.rvOrders);
         tvNoOrders = view.findViewById(R.id.tvOrderHistory);
-        TextView tvCustomerName = view.findViewById(R.id.tvCustomerName);
+        tvCustomerName = view.findViewById(R.id.tvCustomerName);
 
         tvCustomerName.setText("Customer: " + customerName);
 
-        setupRecyclerView();
-        loadOrders();
+        rvOrders.setLayoutManager(new LinearLayoutManager(requireContext()));
+        orderAdapter = new OrderAdapter(requireContext());
+        rvOrders.setAdapter(orderAdapter);
+
+        if (userId != null && !userId.isEmpty()) {
+            fetchOrders();
+        } else {
+            showError("No user ID found.");
+        }
 
         return view;
     }
 
-    private void setupRecyclerView() {
-        rvOrders.setLayoutManager(new LinearLayoutManager(requireContext()));
-        orderAdapter = new OrderAdapter(requireContext());
-        rvOrders.setAdapter(orderAdapter);
-    }
+    private void fetchOrders() {
+        RequestBody formBody = new FormBody.Builder()
+                .add("customer_id", userId)
+                .build();
 
-    private void loadOrders() {
-        try {
-            JSONObject jsonObject = new JSONObject(ordersJson);
-            if (jsonObject.getBoolean("success")) {
-                JSONArray orders = jsonObject.getJSONArray("orders");
-                List<Order> orderList = new ArrayList<>();
+        Request request = new Request.Builder()
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/testcustomerorders.php")
+                .post(formBody)
+                .build();
 
-                for (int i = 0; i < orders.length(); i++) {
-                    JSONObject order = orders.getJSONObject(i);
-
-                    // Extract all fields exactly as returned by PHP
-                    String orderId = order.getString("order_id");
-                    String orderDate = order.getString("order_date");
-                    String status = order.getString("status");
-                    boolean isPaid = order.getBoolean("isPaid");
-                    int rating = order.optInt("rating", -1);       // use optInt to avoid exceptions
-                    boolean isRated = order.optInt("isRated", 0) == 1;  // assuming 1 or 0 from DB
-                    String restaurantName = order.getString("restaurant_name");
-                    String customerName = order.getString("customer_name");
-                    String items = order.getString("items");  // e.g. "Burger (2), Chips (1)"
-
-                    // Pass these to your Order constructor
-                    orderList.add(new Order(orderId, restaurantName, items, status, isPaid, orderDate, rating, isRated, customerName));
-                }
-
-                if (orderList.isEmpty()) {
-                    rvOrders.setVisibility(View.GONE);
-                    tvNoOrders.setText("No order history available.");
-                    tvNoOrders.setVisibility(View.VISIBLE);
-                } else {
-                    orderAdapter.setOrders(orderList);
-                    rvOrders.setVisibility(View.VISIBLE);
-                    tvNoOrders.setVisibility(View.GONE);
-                }
-
-            } else {
-                // Handle 'success' == false case
-                rvOrders.setVisibility(View.GONE);
-                tvNoOrders.setText("No order history found.");
-                tvNoOrders.setVisibility(View.VISIBLE);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                showError("Failed to load orders.");
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            rvOrders.setVisibility(View.GONE);
-            tvNoOrders.setText("Error loading order history.");
-            tvNoOrders.setVisibility(View.VISIBLE);
-        }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    showError("Server error: " + response.code());
+                    response.close();
+                    return;
+                }
+
+                String responseData = response.body().string();
+                response.close();
+
+                try {
+                    JSONObject json = new JSONObject(responseData);
+                    if (json.getBoolean("success")) {
+                        JSONArray orders = json.getJSONArray("orders");
+                        List<Order> orderList = new ArrayList<>();
+
+                        for (int i = 0; i < orders.length(); i++) {
+                            JSONObject order = orders.getJSONObject(i);
+                            orderList.add(new Order(
+                                    order.getString("order_id"),
+                                    order.getString("restaurant_name"),
+                                    order.getString("items"),
+                                    order.getString("status"),
+                                    order.getBoolean("isPaid"),
+                                    order.getString("order_date"),
+                                    order.optInt("rating", -1),
+                                    order.optInt("isRated", 0) == 1,
+                                    order.optString("customer_name", "Guest")
+                            ));
+                        }
+
+                        requireActivity().runOnUiThread(() -> {
+                            if (orderList.isEmpty()) {
+                                showError("No order history available.");
+                            } else {
+                                orderAdapter.setOrders(orderList);
+                                tvNoOrders.setVisibility(View.GONE);
+                                rvOrders.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    } else {
+                        requireActivity().runOnUiThread(() -> {
+                            showError(json.optString("message", "No order history."));
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    requireActivity().runOnUiThread(() -> {
+                        showError("Error parsing order data.");
+                    });
+                }
+            }
+        });
     }
 
-
-
+    private void showError(String message) {
+        requireActivity().runOnUiThread(() -> {
+            tvNoOrders.setText(message);
+            tvNoOrders.setVisibility(View.VISIBLE);
+            rvOrders.setVisibility(View.GONE);
+        });
+    }
 }

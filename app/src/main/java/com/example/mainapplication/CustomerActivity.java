@@ -23,12 +23,11 @@ public class CustomerActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private CustomerPagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         EdgeToEdge.enable(this);
-
         setContentView(R.layout.activity_customer_page);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.orderHistoryLayout), (v, insets) -> {
@@ -39,7 +38,9 @@ public class CustomerActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("");
+        }
 
         DrawerLayout drawerLayout = findViewById(R.id.orderHistoryLayout);
         NavigationView navigationView = findViewById(R.id.navigationView);
@@ -62,23 +63,28 @@ public class CustomerActivity extends AppCompatActivity {
             return false;
         });
 
+        // Get customer name safely with fallback
+        String customerName = getIntent().getStringExtra("customer_name");
+        if (customerName == null || customerName.trim().isEmpty()) {
+            customerName = "Guest";
+        }
+
+        // Safely get header TextView and set text
+        View headerView = navigationView.getHeaderView(0);
+        if (headerView != null) {
+            TextView tvMemberName = headerView.findViewById(R.id.tvMemberName);
+            if (tvMemberName != null) {
+                tvMemberName.setText(customerName);
+            }
+        }
+
+        // Setup ViewPager and TabLayout
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
 
-        // Get customer data from intent
-        String customerName = getIntent().getStringExtra("customer_name");
-        String ordersJson = getIntent().getStringExtra("orders_json");
-
-        // Set customer name in toolbar header
-        View headerView = navigationView.getHeaderView(0);
-        TextView tvMemberName = headerView.findViewById(R.id.tvMemberName);
-        tvMemberName.setText(customerName);
-
-        // Initialize adapter
-        adapter = new CustomerPagerAdapter(this, customerName, ordersJson);
+        adapter = new CustomerPagerAdapter(this);
         viewPager.setAdapter(adapter);
 
-        // Connect TabLayout with ViewPager
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> {
                     switch (position) {
@@ -90,6 +96,5 @@ public class CustomerActivity extends AppCompatActivity {
                             break;
                     }
                 }).attach();
-
-        };
+    }
 }

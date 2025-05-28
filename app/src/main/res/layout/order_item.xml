@@ -22,10 +22,16 @@
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/tvRestaurant"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restaurant" />
+
+        <TextView
             android:id="@+id/tvDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Restaurant: \nItems: " />
+            android:text="Items: " />
 
         <TextView
             android:id="@+id/tvStatus"

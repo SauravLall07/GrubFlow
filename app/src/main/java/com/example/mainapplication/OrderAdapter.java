@@ -125,6 +125,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvRestaurant = itemView.findViewById(R.id.tvRestaurant);
             tvStatus = itemView.findViewById(R.id.tvStatus);
             btnThumbUp = itemView.findViewById(R.id.btnThumbUp);
             btnThumbDown = itemView.findViewById(R.id.btnThumbDown);
