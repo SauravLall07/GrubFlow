@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    android:padding="14dp"
     android:backgroundTint="@color/dark_grey"
     android:elevation="4dp"
-    android:radius="12dp">
+    android:radius="12dp"
+    android:padding="14dp">
 
     <LinearLayout
         android:orientation="vertical"
@@ -17,7 +17,7 @@
             android:id="@+id/tvOrderId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Order #123"
+            android:text="Order ID: #123"
             android:textStyle="bold"
             android:textSize="18sp"
             android:textColor="@android:color/white" />
@@ -26,24 +26,32 @@
             android:id="@+id/tvRestaurant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Restaurant"
-            android:textColor="@android:color/white" />
+            android:text="Restaurant: XYZ"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="4dp" />
 
         <TextView
             android:id="@+id/tvDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Items: "
-            android:textColor="@android:color/white" />
+            android:text="Items: Burger x2, Coke x1"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="4dp" />
 
-        <Button
-            android:id="@+id/btnStatus"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status: Pending"
-            android:layout_marginTop="8dp"
+            android:text="Status:"
             android:textColor="@android:color/white"
-            android:backgroundTint="@color/teal" />
+            android:layout_marginTop="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal"
+            android:popupBackground="@color/dark_grey"
+            android:layout_marginTop="4dp" />
 
         <TextView
             android:id="@+id/tvPaid"
@@ -51,7 +59,7 @@
             android:layout_height="wrap_content"
             android:text="Paid: No"
             android:textColor="@android:color/white"
-            android:layout_marginTop="4dp" />
+            android:layout_marginTop="6dp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

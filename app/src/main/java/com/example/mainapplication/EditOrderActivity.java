@@ -106,8 +106,7 @@ public class EditOrderActivity extends AppCompatActivity {
         String restaurantName = obj.optString("restaurant_name", "Unknown");
 
         String details = itemName
-                + " (x" + quantity + ")"
-                + " @ " + restaurantName;
+                + " (x" + quantity + ")";
 
         return new Order(orderId, restaurantName, details, status,
                 isPaid, orderTime, rating, isRated, customerName);
