@@ -84,17 +84,18 @@ public class RestaurantsFragment extends Fragment {
                             String contact = obj.getString("contact");
                             double aveRating = obj.getDouble("ave_rating");
                             int numRatings = obj.getInt("num_of_ratings");
+                            String imageUrl = obj.getString("image_url");
 
                             // Fill the rest with default/placeholder values
                             Restaurant restaurant = new Restaurant(
                                     id,
                                     name,
                                     "Great food at great prices", // description
-                                    "", // imageUrl
+                                    imageUrl,
                                     aveRating,
-                                    numRatings, // reviewCount
-                                    location, // address
-                                    contact, // phoneNumber
+                                    numRatings,
+                                    location,
+                                    contact,
                                     "9:00 AM - 9:00 PM", // openingHours
                                     true, // isOpen
                                     "1.2 km" // distance

@@ -20,7 +20,7 @@ public class Restaurant {
         this.id = id;
         this.name = name;
         this.description = ""; // default
-        this.imageUrl = "";    // default
+        this.imageUrl = imageUrl;    // default
         this.aveRating = aveRating;
         this.numRatings = numRatings;
         this.location = location;
@@ -47,12 +47,12 @@ public class Restaurant {
         return imageUrl;
     }
 
-    public int getNumRatings() {
-        return numRatings;
-    }
-
     public double getAveRating() {
         return aveRating;
+    }
+
+    public int getNumRatings() {
+        return numRatings;
     }
 
     public String getLocation() {
