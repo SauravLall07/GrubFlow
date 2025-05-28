@@ -109,7 +109,7 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
         }
 
         private void updateOrderStatusOnServer(Order order) {
-            String url = "https://yourdomain.com/update_order.php"; // Replace with actual server URL
+            String url = "https://lamp.ms.wits.ac.za/home/s2801261/updatestatus.php"; // Replace with actual server URL
 
             StringRequest request = new StringRequest(Request.Method.POST, url,
                     response -> Log.d("UpdateOrder", "Response: " + response),
