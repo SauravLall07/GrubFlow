@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,7 +34,7 @@ public class OrderHistoryFragment extends Fragment {
     private TextView tvNoOrders;
     private TextView tvCustomerName;
     private OrderAdapter orderAdapter;
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     private final OkHttpClient client = new OkHttpClient();
     private String userId;
     private String customerName;
@@ -65,12 +66,21 @@ public class OrderHistoryFragment extends Fragment {
         rvOrders = view.findViewById(R.id.rvOrders);
         tvNoOrders = view.findViewById(R.id.tvOrderHistory);
         tvCustomerName = view.findViewById(R.id.tvCustomerName);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
         tvCustomerName.setText("Customer: " + customerName);
 
         rvOrders.setLayoutManager(new LinearLayoutManager(requireContext()));
         orderAdapter = new OrderAdapter(requireContext());
         rvOrders.setAdapter(orderAdapter);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (userId != null && !userId.isEmpty()) {
+                fetchOrdersByCustomerId(userId);
+            } else if (customerName != null && !customerName.equals("Guest")) {
+                fetchOrdersByCustomerName(customerName);
+            }
+        });
 
         if (userId != null && !userId.isEmpty()) {
             fetchOrdersByCustomerId(userId);
@@ -115,6 +125,7 @@ public class OrderHistoryFragment extends Fragment {
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
                 showError("Failed to load orders: " + e.getMessage());
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -122,6 +133,7 @@ public class OrderHistoryFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     showError("Server error: " + response.code());
                     response.close();
+                    swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
 
@@ -159,16 +171,19 @@ public class OrderHistoryFragment extends Fragment {
                                 tvNoOrders.setVisibility(View.GONE);
                                 rvOrders.setVisibility(View.VISIBLE);
                             }
+                            swipeRefreshLayout.setRefreshing(false);
                         });
                     } else {
                         requireActivity().runOnUiThread(() -> {
                             showError(json.optString("message", "No order history."));
+                            swipeRefreshLayout.setRefreshing(false);
                         });
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                     requireActivity().runOnUiThread(() -> {
                         showError("Error parsing order data.");
+                        swipeRefreshLayout.setRefreshing(false);
                     });
                 }
             }
