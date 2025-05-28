@@ -5,8 +5,8 @@ public class Restaurant {
     private String name;
     private String description;
     private String imageUrl;
-    private double rating;
-    private int reviewCount;
+    private double aveRating;
+    private int numRatings;
     private String location;
     private String contact;
     private String openingHours;
@@ -14,15 +14,15 @@ public class Restaurant {
     private String distance;
 
     public Restaurant(int id, String name, String description, String imageUrl,
-                      double rating, int reviewCount, String location,
+                      double aveRating, int numRatings, String location,
                       String contact, String openingHours, boolean isOpen,
                       String distance) {
         this.id = id;
         this.name = name;
         this.description = ""; // default
         this.imageUrl = "";    // default
-        this.rating = 0.0;
-        this.reviewCount = 0;
+        this.aveRating = aveRating;
+        this.numRatings = numRatings;
         this.location = location;
         this.contact = contact;
         this.openingHours = "";
@@ -47,12 +47,12 @@ public class Restaurant {
         return imageUrl;
     }
 
-    public double getRating() {
-        return rating;
+    public int getNumRatings() {
+        return numRatings;
     }
 
-    public int getReviewCount() {
-        return reviewCount;
+    public double getAveRating() {
+        return aveRating;
     }
 
     public String getLocation() {

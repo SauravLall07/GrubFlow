@@ -83,8 +83,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
             tvDescription.setText(restaurant.getDescription());
 
             // Format rating and review count
-            tvRating.setText(String.format("%.1f", restaurant.getRating()));
-            tvReviewCount.setText(String.format("(%d reviews)", restaurant.getReviewCount()));
+            tvRating.setText(String.format("%.1f", restaurant.getAveRating()));
+            tvReviewCount.setText(String.format("(%d reviews)", restaurant.getNumRatings()));
 
             // Format distance
             tvDistance.setText(restaurant.getDistance());
