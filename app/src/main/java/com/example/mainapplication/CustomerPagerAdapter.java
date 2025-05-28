@@ -5,11 +5,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-public class OrderHistoryPagerAdapter extends FragmentStateAdapter {
+public class CustomerPagerAdapter extends FragmentStateAdapter {
     private final String customerName;
     private final String ordersJson;
 
-    public OrderHistoryPagerAdapter(@NonNull FragmentActivity fragmentActivity, String customerName, String ordersJson) {
+    public CustomerPagerAdapter(@NonNull FragmentActivity fragmentActivity, String customerName, String ordersJson) {
         super(fragmentActivity);
         this.customerName = customerName;
         this.ordersJson = ordersJson;

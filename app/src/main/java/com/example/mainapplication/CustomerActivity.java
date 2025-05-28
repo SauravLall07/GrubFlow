@@ -22,7 +22,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 public class CustomerActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
-    private OrderHistoryPagerAdapter adapter;
+    private CustomerPagerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +75,7 @@ public class CustomerActivity extends AppCompatActivity {
         tvMemberName.setText(customerName);
 
         // Initialize adapter
-        adapter = new OrderHistoryPagerAdapter(this, customerName, ordersJson);
+        adapter = new CustomerPagerAdapter(this, customerName, ordersJson);
         viewPager.setAdapter(adapter);
 
         // Connect TabLayout with ViewPager
