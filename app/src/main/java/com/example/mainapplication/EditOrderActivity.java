@@ -1,6 +1,7 @@
 package com.example.mainapplication;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,16 +25,21 @@ public class EditOrderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_order_history);
 
-        // Initialize views
+        // Initialize UI elements
         tvCustomerName = findViewById(R.id.tvCustomerName);
         tvOrderHistory = findViewById(R.id.tvOrderHistory);
         rvOrders = findViewById(R.id.rvOrders);
 
-        // Get customer name and orders JSON from intent
+        // Retrieve data from Intent
         String customerName = getIntent().getStringExtra("customer_name");
         String ordersJson = getIntent().getStringExtra("orders_json");
 
-        if (customerName == null) customerName = "Unknown Customer";
+        Log.d("EditOrderActivity", "Received JSON: " + ordersJson);
+
+        if (customerName == null || customerName.isEmpty()) {
+            customerName = "Unknown Customer";
+        }
+
         tvCustomerName.setText("Customer: " + customerName);
 
         // Setup RecyclerView and Adapter
@@ -41,7 +47,7 @@ public class EditOrderActivity extends AppCompatActivity {
         orderAdapter = new OrderAdapter(this);
         rvOrders.setAdapter(orderAdapter);
 
-        // Parse and display orders
+        // Parse and load orders
         List<Order> orders = parseOrdersFromJson(ordersJson, customerName);
 
         if (orders.isEmpty()) {
@@ -57,30 +63,56 @@ public class EditOrderActivity extends AppCompatActivity {
 
     private List<Order> parseOrdersFromJson(String json, String customerName) {
         List<Order> orders = new ArrayList<>();
-        if (json == null || json.isEmpty()) return orders;
+        if (json == null || json.trim().isEmpty()) return orders;
 
         try {
-            JSONArray jsonArray = new JSONArray(json);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-
-                String orderId = obj.getString("order_id");
-                String itemName = obj.getString("item_name");
-                int quantity = obj.optInt("quantity", 0);
-                String status = obj.getString("status");
-                String orderTime = obj.getString("order_time");
-                boolean isPaid = obj.optBoolean("is_paid", false);
-                boolean isRated = obj.optBoolean("is_rated", false);
-                int rating = obj.optInt("rating", 0);
-
-                String details = itemName + " (x" + quantity + ")";
-                Order order = new Order(orderId, "Unknown", details, status,
-                        isPaid, orderTime, rating, isRated, customerName);
-                orders.add(order);
+            // Check if json starts with '[' (JSONArray) or '{' (JSONObject)
+            json = json.trim();
+            if (json.startsWith("[")) {
+                JSONArray jsonArray = new JSONArray(json);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    orders.add(parseOrderObject(obj, customerName));
+                }
+            } else if (json.startsWith("{")) {
+                // In case the response is a JSONObject (single order or wrapper)
+                JSONObject obj = new JSONObject(json);
+                // If it has a key that holds orders, try to extract array
+                if (obj.has("orders")) {
+                    JSONArray jsonArray = obj.getJSONArray("orders");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        orders.add(parseOrderObject(jsonArray.getJSONObject(i), customerName));
+                    }
+                } else {
+                    // Assume single order object
+                    orders.add(parseOrderObject(obj, customerName));
+                }
+            } else {
+                Log.e("EditOrderActivity", "Unexpected JSON format");
             }
         } catch (Exception e) {
+            Log.e("EditOrderActivity", "JSON parsing error: " + e.getMessage());
             e.printStackTrace();
         }
+
         return orders;
     }
+
+    private Order parseOrderObject(JSONObject obj, String customerName) {
+        String orderId = obj.optString("order_id", "");
+        String itemName = obj.optString("item_name", "Unknown item");
+        int quantity = obj.optInt("quantity", 0);
+        String status = obj.optString("status", "Unknown");
+        String orderTime = obj.optString("order_time", "");
+        boolean isPaid = obj.optBoolean("is_paid", false);
+        boolean isRated = obj.optBoolean("is_rated", false);
+        int rating = obj.optInt("rating", 0);
+        String restaurantName = obj.optString("restaurant_name", "Unknown");
+
+        String details = itemName + " (x" + quantity + ")";
+
+        return new Order(orderId, restaurantName, details, status,
+                isPaid, orderTime, rating, isRated, customerName);
+    }
+
 }

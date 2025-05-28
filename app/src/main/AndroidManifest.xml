@@ -30,6 +30,7 @@
         <activity android:name=".SignInActivity" android:exported="false" />
         <activity android:name=".CreateNewOrderActivity" android:exported="false" />
         <activity android:name=".StaffMenuActivity" android:windowSoftInputMode="adjustResize" android:exported="false" />
+        <activity android:name=".EditOrderActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

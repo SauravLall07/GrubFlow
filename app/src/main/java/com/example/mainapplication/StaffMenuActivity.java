@@ -237,7 +237,7 @@ public class StaffMenuActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://lamp.ms.wits.ac.za/home/s2801261/get_order.php")
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/testcustomerorders.php")
                 .post(formBody)
                 .build();
 
@@ -251,14 +251,20 @@ public class StaffMenuActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    runOnUiThread(() -> Toast.makeText(StaffMenuActivity.this,
+                            "Server error: " + response.code(), Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
                 if (response.body() != null) {
                     String responseString = response.body().string();
 
+                    Log.d("SERVER_RAW_RESPONSE", responseString);
+
                     runOnUiThread(() -> {
-                        Log.d("SERVER_RESPONSE", responseString);
                         try {
                             JSONObject json = new JSONObject(responseString);
-
                             if (!json.getBoolean("success")) {
                                 Toast.makeText(StaffMenuActivity.this, json.getString("message"), Toast.LENGTH_SHORT).show();
                                 return;
@@ -267,8 +273,9 @@ public class StaffMenuActivity extends AppCompatActivity {
                             JSONArray ordersArray = json.getJSONArray("orders");
 
                             Intent intent = new Intent(StaffMenuActivity.this, EditOrderActivity.class);
-                            intent.putExtra("customer_name", name);
+                            intent.putExtra("customer_id", selectedUserId);
                             intent.putExtra("orders_json", ordersArray.toString());
+                            intent.putExtra("customer_name", selectedUserName);
                             startActivity(intent);
 
                         } catch (Exception e) {
@@ -276,8 +283,13 @@ public class StaffMenuActivity extends AppCompatActivity {
                             Toast.makeText(StaffMenuActivity.this, "Response parsing error", Toast.LENGTH_SHORT).show();
                         }
                     });
+                } else {
+                    runOnUiThread(() -> Toast.makeText(StaffMenuActivity.this,
+                            "Empty response from server", Toast.LENGTH_SHORT).show());
                 }
             }
+
+
         });
     }
 }
