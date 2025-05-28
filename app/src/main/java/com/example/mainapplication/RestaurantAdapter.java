@@ -76,12 +76,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
             tvOpeningStatus = itemView.findViewById(R.id.tvOpeningStatus);
             ivRestaurant = itemView.findViewById(R.id.ivRestaurant);
             container = itemView.findViewById(R.id.container);
-
-            container.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onRestaurantClick(restaurants.get(getAdapterPosition()));
-                }
-            });
+            
         }
 
         void bind(Restaurant restaurant) {
