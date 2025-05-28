@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,12 +76,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
             tvOpeningStatus = itemView.findViewById(R.id.tvOpeningStatus);
             ivRestaurant = itemView.findViewById(R.id.ivRestaurant);
             container = itemView.findViewById(R.id.container);
-
-            container.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onRestaurantClick(restaurants.get(getAdapterPosition()));
-                }
-            });
+            
         }
 
         void bind(Restaurant restaurant) {
@@ -94,6 +91,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
             // Format distance
             tvDistance.setText(restaurant.getDistance());
+
+            Glide.with(itemView.getContext())
+                    .load(restaurant.getImageUrl())
+                    .centerCrop()
+                    .into(ivRestaurant);
 
             // Set opening status
             if (restaurant.isOpen()) {
