@@ -72,30 +72,44 @@ public class OrderHistoryFragment extends Fragment {
 
     private void loadOrders() {
         try {
-            JSONArray orders = new JSONArray(ordersJson);
-            List<Order> orderList = new ArrayList<>();
+            JSONObject jsonObject = new JSONObject(ordersJson);
+            if (jsonObject.getBoolean("success")) {
+                JSONArray orders = jsonObject.getJSONArray("orders");
+                List<Order> orderList = new ArrayList<>();
 
-            for (int i = 0; i < orders.length(); i++) {
-                JSONObject order = orders.getJSONObject(i);
-                orderList.add(new Order(
-                        order.optString("orderId"),
-                        order.optString("restaurant_name"),
-                        order.optString("item_name"),
-                        order.optInt("quantity"),
-                        order.optString("status"),
-                        order.optBoolean("isPaid"),
-                        order.optString("time")
-                ));
-            }
+                for (int i = 0; i < orders.length(); i++) {
+                    JSONObject order = orders.getJSONObject(i);
 
-            if (orderList.isEmpty()) {
-                rvOrders.setVisibility(View.GONE);
-                tvNoOrders.setText("No order history available.");
-                tvNoOrders.setVisibility(View.VISIBLE);
+                    // Extract all fields exactly as returned by PHP
+                    String orderId = order.getString("order_id");
+                    String orderDate = order.getString("order_date");
+                    String status = order.getString("status");
+                    boolean isPaid = order.getBoolean("isPaid");
+                    int rating = order.optInt("rating", -1);       // use optInt to avoid exceptions
+                    boolean isRated = order.optInt("isRated", 0) == 1;  // assuming 1 or 0 from DB
+                    String restaurantName = order.getString("restaurant_name");
+                    String customerName = order.getString("customer_name");
+                    String items = order.getString("items");  // e.g. "Burger (2), Chips (1)"
+
+                    // Pass these to your Order constructor
+                    orderList.add(new Order(orderId, restaurantName, items, status, isPaid, orderDate, rating, isRated, customerName));
+                }
+
+                if (orderList.isEmpty()) {
+                    rvOrders.setVisibility(View.GONE);
+                    tvNoOrders.setText("No order history available.");
+                    tvNoOrders.setVisibility(View.VISIBLE);
+                } else {
+                    orderAdapter.setOrders(orderList);
+                    rvOrders.setVisibility(View.VISIBLE);
+                    tvNoOrders.setVisibility(View.GONE);
+                }
+
             } else {
-                orderAdapter.setOrders(orderList);
-                rvOrders.setVisibility(View.VISIBLE);
-                tvNoOrders.setVisibility(View.GONE);
+                // Handle 'success' == false case
+                rvOrders.setVisibility(View.GONE);
+                tvNoOrders.setText("No order history found.");
+                tvNoOrders.setVisibility(View.VISIBLE);
             }
 
         } catch (Exception e) {
@@ -105,4 +119,7 @@ public class OrderHistoryFragment extends Fragment {
             tvNoOrders.setVisibility(View.VISIBLE);
         }
     }
+
+
+
 }

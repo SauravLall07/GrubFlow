@@ -54,8 +54,20 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.btnThumbUp.setVisibility(isRated ? View.GONE : View.VISIBLE);
         holder.btnThumbDown.setVisibility(isRated ? View.GONE : View.VISIBLE);
 
-        holder.btnThumbUp.setOnClickListener(v -> sendRating(order, true, position));
-        holder.btnThumbDown.setOnClickListener(v -> sendRating(order, false, position));
+        // Optional: Disable buttons immediately to avoid multiple taps
+        holder.btnThumbUp.setEnabled(!isRated);
+        holder.btnThumbDown.setEnabled(!isRated);
+
+        holder.btnThumbUp.setOnClickListener(v -> {
+            holder.btnThumbUp.setEnabled(false);
+            holder.btnThumbDown.setEnabled(false);
+            sendRating(order, true, position);
+        });
+        holder.btnThumbDown.setOnClickListener(v -> {
+            holder.btnThumbUp.setEnabled(false);
+            holder.btnThumbDown.setEnabled(false);
+            sendRating(order, false, position);
+        });
     }
 
     @Override
@@ -80,6 +92,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e("Rating", "Failed: " + e.getMessage());
+                // Optionally, re-enable buttons on failure
+                if (context instanceof android.app.Activity) {
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        notifyItemChanged(position);
+                    });
+                }
             }
 
             @Override
@@ -91,7 +109,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                     }
                 } else {
                     Log.e("Rating", "Error: " + response.code());
+                    // Optionally, re-enable buttons on error
+                    if (context instanceof android.app.Activity) {
+                        ((android.app.Activity) context).runOnUiThread(() -> notifyItemChanged(position));
+                    }
                 }
+                response.close();
             }
         });
     }
@@ -102,10 +125,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
-
             tvStatus = itemView.findViewById(R.id.tvStatus);
             btnThumbUp = itemView.findViewById(R.id.btnThumbUp);
             btnThumbDown = itemView.findViewById(R.id.btnThumbDown);
         }
     }
 }
+
