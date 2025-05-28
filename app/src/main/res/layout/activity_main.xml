@@ -20,9 +20,9 @@
         android:elevation="10dp"
         android:shadowColor="#88000000"
         android:src="@drawable/logo_transparent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Title -->
     <TextView
@@ -32,12 +32,12 @@
         android:layout_marginTop="12dp"
         android:fontFamily="@font/black_ops_one"
         android:letterSpacing="0.1"
-        android:text="CULINARY TRACKER"
+        android:text="MacroData Munchers"
         android:textColor="@color/white"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="25sp"
+        app:layout_constraintTop_toBottomOf="@id/ivLogo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivLogo" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Login Card -->
     <LinearLayout
@@ -46,10 +46,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="0dp"
         android:orientation="vertical"
         android:padding="20dp"
         android:background="@drawable/rounded_translucent_bg"
-        app:layout_constraintTop_toBottomOf="@+id/tvAppName"
+        app:layout_constraintTop_toBottomOf="@id/tvAppName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -58,30 +59,43 @@
             android:layout_height="wrap_content"
             android:padding="20dp">
 
-            <!-- Title -->
+            <!-- Login Title -->
             <TextView
                 android:id="@+id/tvLoginTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/black_ops_one"
-                android:text="Welcome Back"
+                android:text="Welcome"
                 android:textColor="@color/burgundy"
                 android:textSize="22sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Subtitle -->
+            <!-- Subtitle 1 -->
             <TextView
-                android:id="@+id/tvLoginSubtitle"
+                android:id="@+id/tvLoginSubtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="1dp"
+                android:fontFamily="@font/black_ops_one"
+                android:text="The multiverse is whole again"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLoginTitle" />
+
+            <!-- Subtitle 2 -->
+            <TextView
+                android:id="@+id/tvLoginSubtitle2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/black_ops_one"
                 android:text="Sign in to continue"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLoginTitle" />
+                app:layout_constraintTop_toBottomOf="@id/tvLoginSubtitle1" />
 
             <!-- Email Input -->
             <com.google.android.material.textfield.TextInputLayout
@@ -89,7 +103,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="10dp"
                 android:hint="Email"
                 app:boxCornerRadiusTopStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
@@ -101,7 +115,7 @@
                 app:hintTextColor="@color/burgundy"
                 app:startIconDrawable="@drawable/ic_email"
                 app:startIconTint="@color/burgundy"
-                app:layout_constraintTop_toBottomOf="@id/tvLoginSubtitle"
+                app:layout_constraintTop_toBottomOf="@id/tvLoginSubtitle2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
@@ -147,49 +161,48 @@
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Remember Me and Forgot Password Row -->
-        <androidx.constraintlayout.widget.ConstraintLayout
+            <!-- Remember Me and Forgot Password -->
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/llRememberForgot"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:orientation="horizontal"
                 app:layout_constraintTop_toBottomOf="@id/tilPassword"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-            <CheckBox
-                android:id="@+id/cbRememberMe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/black_ops_one"
-                android:text="Remember Me"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                <CheckBox
+                    android:id="@+id/cbRememberMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/black_ops_one"
+                    android:text="Remember Me"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <TextView
                     android:id="@+id/tvForgotPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:fontFamily="@font/black_ops_one"
                     android:text="Forgot Password?"
                     android:textColor="@color/burgundy"
                     android:textSize="12sp"
-                    android:layout_marginStart="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Login Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:fontFamily="@font/black_ops_one"
                 android:text="LOGIN"
                 android:textColor="@color/white"
@@ -221,7 +234,7 @@
                     android:background="@color/divider" />
             </LinearLayout>
 
-            <!-- Sign Up Footer -->
+            <!-- Sign Up -->
             <LinearLayout
                 android:id="@+id/llSignUp"
                 android:layout_width="wrap_content"
