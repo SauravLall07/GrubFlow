@@ -28,7 +28,6 @@ public class OrderHistoryActivity extends AppCompatActivity {
     private RecyclerView rvOrders;
     private TextView tvOrderHistory;
     private OrderAdapter adapter;
-    private final List<Order> orderList = new ArrayList<>();
     private final OkHttpClient client = new OkHttpClient();
     private String userId;
 
@@ -41,17 +40,18 @@ public class OrderHistoryActivity extends AppCompatActivity {
         tvOrderHistory = findViewById(R.id.tvOrderHistory);
         TextView tvCustomerName = findViewById(R.id.tvCustomerName);
 
-        // Initialize RecyclerView
+        // Setup RecyclerView
         rvOrders.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OrderAdapter(this, orderList);
+        adapter = new OrderAdapter(this);
         rvOrders.setAdapter(adapter);
 
-        // Get customer name from intent
+        // Get customer name
         String customerName = getIntent().getStringExtra("customer_name");
         if (customerName != null) {
             tvCustomerName.setText("Customer: " + customerName);
         }
 
+        // Get user ID
         userId = getIntent().getStringExtra("user_id");
         if (userId != null && !userId.isEmpty()) {
             fetchOrders();
@@ -75,61 +75,57 @@ public class OrderHistoryActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> {
-                    tvOrderHistory.setText("Failed to load orders.");
-                    rvOrders.setVisibility(View.GONE);
-                    tvOrderHistory.setVisibility(View.VISIBLE);
-                });
+                showError("Failed to load orders.");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData = response.body().string();
-                runOnUiThread(() -> {
-                    try {
-                        JSONObject json = new JSONObject(responseData);
-                        if (json.getBoolean("success")) {
-                            JSONArray orders = json.getJSONArray("orders");
-                            orderList.clear();
+                try {
+                    JSONObject json = new JSONObject(responseData);
+                    if (json.getBoolean("success")) {
+                        JSONArray orders = json.getJSONArray("orders");
+                        List<Order> orderList = new ArrayList<>();
 
-                            for (int i = 0; i < orders.length(); i++) {
-                                JSONObject o = orders.getJSONObject(i);
-                                orderList.add(new Order(
-                                        o.getString("orderId"),
-                                        o.getString("restaurant_name"),
-                                        o.getString("item_name"),
-                                        o.getInt("quantity"),
-                                        o.getString("status"),
-                                        o.getBoolean("isPaid"),
-                                        o.getString("time")
-                                ));
-                            }
+                        for (int i = 0; i < orders.length(); i++) {
+                            JSONObject o = orders.getJSONObject(i);
+                            orderList.add(new Order(
+                                    o.getString("orderId"),
+                                    o.getString("restaurant_name"),
+                                    o.getString("item_name"),
+                                    o.getInt("quantity"),
+                                    o.getString("status"),
+                                    o.getBoolean("isPaid"),
+                                    o.getString("time")
+                            ));
+                        }
 
+                        runOnUiThread(() -> {
                             if (orderList.isEmpty()) {
                                 tvOrderHistory.setText("No order history available");
                                 tvOrderHistory.setVisibility(View.VISIBLE);
                                 rvOrders.setVisibility(View.GONE);
                             } else {
+                                adapter.setOrders(orderList); // ✅ Proper method to update data
                                 tvOrderHistory.setVisibility(View.GONE);
                                 rvOrders.setVisibility(View.VISIBLE);
-                                adapter.notifyDataSetChanged();
                             }
-                        } else {
-                            showError(json.getString("message"));
-                        }
-                    } catch (Exception e) {
-                        showError("Error parsing response");
+                        });
+                    } else {
+                        showError(json.getString("message"));
                     }
-                });
+                } catch (Exception e) {
+                    showError("Error parsing response.");
+                }
             }
         });
     }
 
-    private void showError(String msg) {
+    private void showError(String message) {
         runOnUiThread(() -> {
-            tvOrderHistory.setText(msg);
-            rvOrders.setVisibility(View.GONE);
+            tvOrderHistory.setText(message);
             tvOrderHistory.setVisibility(View.VISIBLE);
+            rvOrders.setVisibility(View.GONE);
         });
     }
 }

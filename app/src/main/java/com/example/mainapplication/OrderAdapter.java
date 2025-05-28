@@ -27,14 +27,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     private List<Order> orderList;
     private Context context;
 
-    public OrderAdapter(Context context, List<Order> orders) {
+    public OrderAdapter(Context context) {
         this.context = context;
-        this.orderList = orders != null ? orders : new ArrayList<>();
+        this.orderList = new ArrayList<>();
     }
 
-    // Method to update the orders list
     public void setOrders(List<Order> orders) {
-        this.orderList = orders;
+        this.orderList = orders != null ? orders : new ArrayList<>();
         notifyDataSetChanged();
     }
 
@@ -48,17 +47,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
-        holder.tvRestaurant.setText(order.getDetails());
+        holder.tvRestaurant.setText(order.getRestaurantName());
         holder.tvStatus.setText("Status: " + order.getStatus());
 
-        // Set visibility based on rating status
         boolean isRated = order.isRated();
         holder.btnThumbUp.setVisibility(isRated ? View.GONE : View.VISIBLE);
         holder.btnThumbDown.setVisibility(isRated ? View.GONE : View.VISIBLE);
 
-        // Set click listeners for rating buttons
-        holder.btnThumbUp.setOnClickListener(v -> handleRatingClick(position, true));
-        holder.btnThumbDown.setOnClickListener(v -> handleRatingClick(position, false));
+        holder.btnThumbUp.setOnClickListener(v -> sendRating(order, true, position));
+        holder.btnThumbDown.setOnClickListener(v -> sendRating(order, false, position));
     }
 
     @Override
@@ -66,20 +63,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         return orderList.size();
     }
 
-    private void handleRatingClick(int position, boolean isThumbUp) {
-        if (position != RecyclerView.NO_POSITION) {
-            Order order = orderList.get(position);
-            sendRating(order.getOrderId(), isThumbUp);
-            order.setRated(true);
-            notifyItemChanged(position);
-        }
-    }
-
-    private void sendRating(String orderId, boolean isThumbUp) {
+    private void sendRating(Order order, boolean isThumbUp, int position) {
         OkHttpClient client = new OkHttpClient();
 
         RequestBody formBody = new FormBody.Builder()
-                .add("order_id", orderId)
+                .add("order_id", order.getOrderId())
                 .add("rating", isThumbUp ? "1" : "0")
                 .build();
 
@@ -89,12 +77,19 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
+            @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e("Rating", "Failed: " + e.getMessage());
             }
 
+            @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (!response.isSuccessful()) {
+                if (response.isSuccessful()) {
+                    order.setRated(true);
+                    if (context instanceof android.app.Activity) {
+                        ((android.app.Activity) context).runOnUiThread(() -> notifyItemChanged(position));
+                    }
+                } else {
                     Log.e("Rating", "Error: " + response.code());
                 }
             }

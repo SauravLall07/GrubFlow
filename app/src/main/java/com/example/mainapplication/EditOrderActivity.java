@@ -13,6 +13,7 @@ public class EditOrderActivity extends AppCompatActivity {
 
     private TextView tvCustomerName, tvOrderHistory;
     private RecyclerView rvOrders;
+    private OrderAdapter orderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,31 +22,34 @@ public class EditOrderActivity extends AppCompatActivity {
 
         // Initialize views
         tvCustomerName = findViewById(R.id.tvCustomerName);
-        tvOrderHistory = findViewById(R.id.rvOrders);
+        tvOrderHistory = findViewById(R.id.tvOrderHistory);  // ✅ Corrected ID
         rvOrders = findViewById(R.id.rvOrders);
 
+        // Get customer name from intent
         String customerName = getIntent().getStringExtra("customer_name");
         if (customerName == null) customerName = "Unknown Customer";
         tvCustomerName.setText("Customer: " + customerName);
 
-        // Fetch orders for this customer (replace with real API/db call)
-        List<Order> orders = fetchOrdersForCustomer(customerName);
+        // Setup RecyclerView and Adapter
+        rvOrders.setLayoutManager(new LinearLayoutManager(this));
+        orderAdapter = new OrderAdapter(this);
+        rvOrders.setAdapter(orderAdapter);
 
+        // Load orders
+        List<Order> orders = fetchOrdersForCustomer(customerName);
         if (orders.isEmpty()) {
             tvOrderHistory.setVisibility(View.VISIBLE);
             rvOrders.setVisibility(View.GONE);
         } else {
             tvOrderHistory.setVisibility(View.GONE);
             rvOrders.setVisibility(View.VISIBLE);
-
-            rvOrders.setLayoutManager(new LinearLayoutManager(this));
-            rvOrders.setAdapter(new OrderAdapter(this,orders));
+            orderAdapter.setOrders(orders);
         }
     }
 
-    // Dummy method - replace with your actual data fetching logic
+    // Dummy method - replace with actual data fetching logic
     private List<Order> fetchOrdersForCustomer(String name) {
-        // Return empty list simulating no orders for this example
+        // Return empty list simulating no orders for now
         return java.util.Collections.emptyList();
     }
 }
