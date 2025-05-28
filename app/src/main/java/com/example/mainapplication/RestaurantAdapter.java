@@ -57,12 +57,16 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
         private TextView tvReviewCount;
         private TextView tvDistance;
         private TextView tvOpeningStatus;
+        private TextView tvCellNumber;
+        private TextView tvLocation;
         private ImageView ivRestaurant;
         private View container;
 
         RestaurantViewHolder(View itemView) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tvRestaurantName);
+            tvCellNumber = itemView.findViewById(R.id.tvCellNumber);
+            tvLocation = itemView.findViewById(R.id.tvLocation);
             tvDescription = itemView.findViewById(R.id.tvRestaurantDescription);
             tvRating = itemView.findViewById(R.id.tvRating);
             tvReviewCount = itemView.findViewById(R.id.tvReviewCount);
@@ -80,6 +84,8 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Re
 
         void bind(Restaurant restaurant) {
             tvName.setText(restaurant.getName());
+            tvCellNumber.setText(restaurant.getContact());
+            tvLocation.setText(restaurant.getLocation());
             tvDescription.setText(restaurant.getDescription());
 
             // Format rating and review count
