@@ -42,22 +42,18 @@ public class OrderHistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Use getActivity().getSharedPreferences(...) safely with Context.MODE_PRIVATE
         SharedPreferences prefs = requireActivity().getSharedPreferences("MyAppPrefs", Context.MODE_PRIVATE);
 
-        // To avoid ClassCastException, check if user_id is stored as String or int and read accordingly
+        // Safely read userId as String, support int fallback
         if (prefs.contains("user_id")) {
             try {
-                // Try getString first
                 userId = prefs.getString("user_id", null);
             } catch (ClassCastException e) {
-                // If ClassCastException, try getInt and convert to string
                 int userIdInt = prefs.getInt("user_id", -1);
-                userId = userIdInt == -1 ? null : String.valueOf(userIdInt);
+                userId = userIdInt != -1 ? String.valueOf(userIdInt) : null;
             }
         }
 
-        // For customerName just read as string (default "Guest")
         customerName = prefs.getString("customer_name", "Guest");
     }
 
@@ -77,29 +73,48 @@ public class OrderHistoryFragment extends Fragment {
         rvOrders.setAdapter(orderAdapter);
 
         if (userId != null && !userId.isEmpty()) {
-            fetchOrders();
+            fetchOrdersByCustomerId(userId);
+        } else if (customerName != null && !customerName.equals("Guest")) {
+            fetchOrdersByCustomerName(customerName);
         } else {
-            showError("No user ID found.");
+            showError("No user ID or customer name found.");
         }
 
         return view;
     }
 
-    private void fetchOrders() {
+    private void fetchOrdersByCustomerId(String customerId) {
         RequestBody formBody = new FormBody.Builder()
-                .add("customer_id", userId)
+                .add("customer_id", customerId)
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://lamp.ms.wits.ac.za/home/s2801261/testcustomerorders.php")
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/get_orders.php")
                 .post(formBody)
                 .build();
 
+        executeRequest(request);
+    }
+
+    private void fetchOrdersByCustomerName(String customerName) {
+        RequestBody formBody = new FormBody.Builder()
+                .add("customer_name", customerName)
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/get_orders.php")
+                .post(formBody)
+                .build();
+
+        executeRequest(request);
+    }
+
+    private void executeRequest(Request request) {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                showError("Failed to load orders.");
+                showError("Failed to load orders: " + e.getMessage());
             }
 
             @Override
@@ -115,18 +130,20 @@ public class OrderHistoryFragment extends Fragment {
 
                 try {
                     JSONObject json = new JSONObject(responseData);
+
                     if (json.getBoolean("success")) {
                         JSONArray orders = json.getJSONArray("orders");
                         List<Order> orderList = new ArrayList<>();
 
                         for (int i = 0; i < orders.length(); i++) {
                             JSONObject order = orders.getJSONObject(i);
+
                             orderList.add(new Order(
                                     order.getString("order_id"),
                                     order.getString("restaurant_name"),
                                     order.getString("items"),
                                     order.getString("status"),
-                                    order.getBoolean("isPaid"),
+                                    order.getInt("isPaid") == 1,
                                     order.getString("order_date"),
                                     order.optInt("rating", -1),
                                     order.optInt("isRated", 0) == 1,

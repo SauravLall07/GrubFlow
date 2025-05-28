@@ -34,6 +34,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     public void setOrders(List<Order> orders) {
         this.orderList = orders != null ? orders : new ArrayList<>();
+        Log.d("OrderAdapter", "Orders set: " + this.orderList.size());  // Debug log
         notifyDataSetChanged();
     }
 
@@ -47,14 +48,17 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     @Override
     public void onBindViewHolder(@NonNull OrderViewHolder holder, int position) {
         Order order = orderList.get(position);
+
+        holder.tvOrderId.setText("Order #" + order.getOrderId());
         holder.tvRestaurant.setText(order.getRestaurantName());
+        holder.tvDetails.setText("Items: " + order.getDetails());
         holder.tvStatus.setText("Status: " + order.getStatus());
+        holder.tvPaid.setText("Paid: " + (order.isPaid() ? "Yes" : "No"));
 
         boolean isRated = order.isRated();
         holder.btnThumbUp.setVisibility(isRated ? View.GONE : View.VISIBLE);
         holder.btnThumbDown.setVisibility(isRated ? View.GONE : View.VISIBLE);
 
-        // Optional: Disable buttons immediately to avoid multiple taps
         holder.btnThumbUp.setEnabled(!isRated);
         holder.btnThumbDown.setEnabled(!isRated);
 
@@ -92,11 +96,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.e("Rating", "Failed: " + e.getMessage());
-                // Optionally, re-enable buttons on failure
                 if (context instanceof android.app.Activity) {
-                    ((android.app.Activity) context).runOnUiThread(() -> {
-                        notifyItemChanged(position);
-                    });
+                    ((android.app.Activity) context).runOnUiThread(() -> notifyItemChanged(position));
                 }
             }
 
@@ -109,7 +110,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                     }
                 } else {
                     Log.e("Rating", "Error: " + response.code());
-                    // Optionally, re-enable buttons on error
                     if (context instanceof android.app.Activity) {
                         ((android.app.Activity) context).runOnUiThread(() -> notifyItemChanged(position));
                     }
@@ -120,16 +120,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
     }
 
     public static class OrderViewHolder extends RecyclerView.ViewHolder {
-        TextView tvRestaurant, tvStatus;
+        TextView tvOrderId, tvRestaurant, tvDetails, tvStatus, tvPaid;
         ImageButton btnThumbUp, btnThumbDown;
 
         public OrderViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvOrderId = itemView.findViewById(R.id.tvOrderId);
             tvRestaurant = itemView.findViewById(R.id.tvRestaurant);
+            tvDetails = itemView.findViewById(R.id.tvDetails);
             tvStatus = itemView.findViewById(R.id.tvStatus);
+            tvPaid = itemView.findViewById(R.id.tvPaid);
             btnThumbUp = itemView.findViewById(R.id.btnThumbUp);
             btnThumbDown = itemView.findViewById(R.id.btnThumbDown);
         }
     }
 }
-
