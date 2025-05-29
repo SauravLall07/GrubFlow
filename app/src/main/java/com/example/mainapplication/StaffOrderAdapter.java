@@ -1,16 +1,13 @@
 package com.example.mainapplication;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,7 +88,7 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
                     String newStatus = parent.getItemAtPosition(position).toString();
                     order.setStatus(newStatus);
 
-                    boolean shouldBePaid = newStatus.equals("Delivered") || newStatus.equals("Collected");
+                    boolean shouldBePaid = newStatus.equals("Collected");
                     order.setPaid(shouldBePaid);
                     updatePaidText(shouldBePaid);
 
