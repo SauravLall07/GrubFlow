@@ -140,20 +140,21 @@ public class SignInActivity extends AppCompatActivity {
         // Create notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.logo_transparent)
-                .setContentTitle("Welcome Back!")
-                .setContentText("Hello " + name + "! We're glad to see you again.")
+                .setContentText("Severance reconnected. Welcome back, " + name + ".")
+
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Welcome back to our app, " + name + "! We're excited to have you here again. How can we assist you today?"))
+                        .bigText("The culinary matrix awaits your command, " + name + ".")
+                )
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setAutoCancel(true)
-                .setColor(getColor(R.color.notification_color)) // Use your app's color
+                .setColor(getColor(R.color.notification_color))
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setOnlyAlertOnce(true)
                 .setShowWhen(true)
                 .setWhen(System.currentTimeMillis())
-                .setContentIntent(pendingIntent) // Set the intent to launch when clicked
-                .setAutoCancel(true); // Remove notification when clicked
+                .setContentIntent(pendingIntent);
+
 
 
         // Show notification
