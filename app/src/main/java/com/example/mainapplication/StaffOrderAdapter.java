@@ -91,7 +91,9 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
                     boolean shouldBePaid = newStatus.equals("Collected");
                     order.setPaid(shouldBePaid);
                     updatePaidText(shouldBePaid);
-
+                    if (shouldBePaid) {
+                        parent.setEnabled(false);
+                    }
                     updateOrderStatusOnServer(order);
                 }
 
