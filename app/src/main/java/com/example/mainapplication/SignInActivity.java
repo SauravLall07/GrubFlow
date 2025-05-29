@@ -117,9 +117,13 @@ public class SignInActivity extends AppCompatActivity {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     "Welcome Notifications",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManager.IMPORTANCE_HIGH
             );
-            channel.setDescription("Notifications for welcome messages");
+            channel.setDescription("Welcome messages when you log in");
+            channel.enableLights(true);
+            channel.setLightColor(0xFF00FF00); // Green light color
+            channel.enableVibration(true);
+            channel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
                 manager.createNotificationChannel(channel);
@@ -128,11 +132,19 @@ public class SignInActivity extends AppCompatActivity {
 
         // Create notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.logo_transparent)
                 .setContentTitle("Welcome Back!")
                 .setContentText("Hello " + name + "! We're glad to see you again.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Welcome back to our app, " + name + "! We're excited to have you here again. How can we assist you today?"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setAutoCancel(true)
+                .setColor(getColor(R.color.notification_color)) // Use your app's color
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setOnlyAlertOnce(true)
+                .setShowWhen(true)
+                .setWhen(System.currentTimeMillis());
 
         // Show notification
         if (notificationManager != null) {
