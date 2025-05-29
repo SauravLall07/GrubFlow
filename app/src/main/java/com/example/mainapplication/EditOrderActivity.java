@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,6 +20,7 @@ public class EditOrderActivity extends AppCompatActivity {
     private TextView tvCustomerName, tvOrderHistory;
     private RecyclerView rvOrders;
     private StaffOrderAdapter staffOrderAdapter;  // fix variable name to camelCase
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class EditOrderActivity extends AppCompatActivity {
         tvCustomerName = findViewById(R.id.tvCustomerName);
         tvOrderHistory = findViewById(R.id.tvOrderHistory);
         rvOrders = findViewById(R.id.rvOrders);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         // Retrieve data from Intent
         String customerName = getIntent().getStringExtra("customer_name");
@@ -47,6 +50,25 @@ public class EditOrderActivity extends AppCompatActivity {
         staffOrderAdapter = new StaffOrderAdapter(this);  // instantiate the correct adapter
         rvOrders.setAdapter(staffOrderAdapter);           // set correct adapter
 
+        // Setup SwipeRefreshLayout
+        String finalCustomerName = customerName;
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            // Refresh the data
+            List<Order> orders = parseOrdersFromJson(ordersJson, finalCustomerName);
+
+            if (orders.isEmpty()) {
+                tvOrderHistory.setVisibility(View.VISIBLE);
+                tvOrderHistory.setText("No orders found.");
+                rvOrders.setVisibility(View.GONE);
+            } else {
+                tvOrderHistory.setVisibility(View.GONE);
+                rvOrders.setVisibility(View.VISIBLE);
+                staffOrderAdapter.setOrders(orders);
+            }
+
+            // Stop the refreshing indicator
+            swipeRefreshLayout.setRefreshing(false);
+        });
         // Parse and load orders
         List<Order> orders = parseOrdersFromJson(ordersJson, customerName);
 
