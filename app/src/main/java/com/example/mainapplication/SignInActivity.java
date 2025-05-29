@@ -3,6 +3,7 @@ package com.example.mainapplication;
 import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.pm.PackageManager;
 import android.content.Context;
 import android.content.Intent;
@@ -130,6 +131,15 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
 
+        // Create notification intent
+        Intent notificationIntent = new Intent(this, SignInActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
+        );
         // Create notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.logo_transparent)
@@ -144,7 +154,10 @@ public class SignInActivity extends AppCompatActivity {
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setOnlyAlertOnce(true)
                 .setShowWhen(true)
-                .setWhen(System.currentTimeMillis());
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(pendingIntent) // Set the intent to launch when clicked
+                .setAutoCancel(true); // Remove notification when clicked
+
 
         // Show notification
         if (notificationManager != null) {
