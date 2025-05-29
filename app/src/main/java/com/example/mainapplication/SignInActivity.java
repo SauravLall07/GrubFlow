@@ -135,7 +135,8 @@ public class SignInActivity extends AppCompatActivity {
                 .setSmallIcon(R.drawable.logo_transparent)
                 .setContentText("Severance reconnected. Welcome back, " + name + ".")
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("The culinary matrix awaits your command, " + name + "."))
+                        .bigText("Severance reconnected. Welcome back, " + name + ".\n" +
+                                "The culinary matrix awaits your command."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setAutoCancel(true)
