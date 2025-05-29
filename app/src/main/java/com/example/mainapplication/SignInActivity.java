@@ -1,6 +1,12 @@
 package com.example.mainapplication;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,7 +17,13 @@ import android.widget.CheckBox;
 import android.content.SharedPreferences;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,9 +38,15 @@ import java.util.Scanner;
 import javax.net.ssl.HttpsURLConnection;
 
 public class SignInActivity extends AppCompatActivity {
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 1001;
+    private ActivityResultLauncher<String> notificationPermissionLauncher;
+    private static final String CHANNEL_ID = "welcome_channel";
+    private static final int NOTIFICATION_ID = 1001;
 
-    Button loginButton;
-    EditText emailField, passwordField;
+    private Button loginButton;
+    private EditText emailField;
+    private EditText passwordField;
+    private NotificationManagerCompat notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +58,29 @@ public class SignInActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Initialize notification manager
+        notificationManager = NotificationManagerCompat.from(this);
+
+        // Initialize notification permission launcher
+        notificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    if (isGranted) {
+                        Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        // Request notification permission if not granted
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+        }
 
         loginButton = findViewById(R.id.btnLogin);
         emailField = findViewById(R.id.etEmail);
@@ -59,6 +100,49 @@ public class SignInActivity extends AppCompatActivity {
             emailField.setText(preferences.getString("email", ""));
             passwordField.setText(preferences.getString("password", ""));
             rememberMe.setChecked(true);
+        }
+    }
+
+    private void showWelcomeNotification(String name) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                return;
+            }
+        }
+
+        // Create notification channel for Android 8.0 and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Welcome Notifications",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("Notifications for welcome messages");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
+        }
+
+        // Create notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle("Welcome Back!")
+                .setContentText("Hello " + name + "! We're glad to see you again.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        // Show notification
+        if (notificationManager != null) {
+            try {
+                notificationManager.notify(NOTIFICATION_ID, builder.build());
+            } catch (SecurityException e) {
+                Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, "Failed to initialize notification manager", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -103,20 +187,23 @@ public class SignInActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     try {
                         if (json.getBoolean("success")) {
-                            Toast.makeText(this, "Login Successful!! Welcome " + json.getString("name"), Toast.LENGTH_LONG).show();
+                            String name = json.getString("name");
+
+                            // Show welcome notification
+                            showWelcomeNotification(name);
+
+                            Toast.makeText(this, "Login Successful!! Welcome " + name, Toast.LENGTH_LONG).show();
 
                             // Extract values
-                            int userId = json.getInt("user_id");        // ← NEW: get user_id
-                            String name = json.getString("name");
+                            int userId = json.getInt("user_id");
                             String role = json.getString("role");
 
                             // Save into SharedPreferences
                             SharedPreferences globalPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor globalEditor = globalPrefs.edit();
                             globalEditor.putString("staff_name", name);
-                            globalEditor.putInt("user_id", userId);    // ← NEW: store user_id
+                            globalEditor.putInt("user_id", userId);
                             globalEditor.apply();
-                            // … after globalEditor.apply():
 
                             Intent intent;
                             if (role.equals("staff")) {
