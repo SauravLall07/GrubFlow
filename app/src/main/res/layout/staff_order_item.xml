@@ -1,65 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="12dp"
     android:backgroundTint="@color/dark_grey"
-    android:elevation="4dp"
-    android:radius="12dp"
-    android:padding="14dp">
+    android:elevation="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="8dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
 
+        <!-- Order ID with larger text -->
         <TextView
             android:id="@+id/tvOrderId"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Order ID: #123"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@android:color/white" />
+            android:layout_marginBottom="6dp" />
 
+        <!-- Restaurant with larger text -->
         <TextView
             android:id="@+id/tvRestaurant"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Restaurant: XYZ"
             android:textColor="@android:color/white"
-            android:layout_marginTop="4dp" />
+            android:textSize="20sp"
+            android:layout_marginBottom="6dp" />
 
+        <!-- Details with larger text -->
         <TextView
             android:id="@+id/tvDetails"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Items: Burger x2, Coke x1"
             android:textColor="@android:color/white"
-            android:layout_marginTop="4dp" />
+            android:textSize="18sp"
+            android:layout_marginBottom="10dp" />
 
+        <!-- Status label with larger text -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Status:"
             android:textColor="@android:color/white"
-            android:layout_marginTop="8dp" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
 
+        <!-- Status spinner with improved styling -->
         <Spinner
             android:id="@+id/spinnerStatus"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:backgroundTint="@color/teal"
-            android:popupBackground="@color/dark_grey"
-            android:layout_marginTop="4dp" />
+            android:popupBackground="@color/grey"
+            android:textColor="@color/dark_grey"
+            android:layout_marginBottom="10dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp" />
 
+        <!-- Payment status with larger text -->
         <TextView
             android:id="@+id/tvPaid"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Paid: No"
             android:textColor="@android:color/white"
-            android:layout_marginTop="6dp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
