@@ -72,7 +72,7 @@ public class SignInActivity extends AppCompatActivity {
                 }
         );
 
-        // Request notification permission if not granted
+        // Request notification permission if needed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -80,9 +80,9 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
 
-        loginButton = findViewById(R.id.btnLogin);
-        emailField = findViewById(R.id.etEmail);
-        passwordField = findViewById(R.id.etPassword);
+        loginButton  = findViewById(R.id.btnLogin);
+        emailField   = findViewById(R.id.etEmail);
+        passwordField= findViewById(R.id.etPassword);
 
         loginButton.setOnClickListener(v -> loginUser());
 
@@ -93,10 +93,10 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         CheckBox rememberMe = findViewById(R.id.cbRememberMe);
-        SharedPreferences preferences = getSharedPreferences("loginPrefs", MODE_PRIVATE);
-        if (preferences.getBoolean("rememberMe", false)) {
-            emailField.setText(preferences.getString("email", ""));
-            passwordField.setText(preferences.getString("password", ""));
+        SharedPreferences prefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+        if (prefs.getBoolean("rememberMe", false)) {
+            emailField.setText(prefs.getString("email", ""));
+            passwordField.setText(prefs.getString("password", ""));
             rememberMe.setChecked(true);
         }
     }
@@ -110,7 +110,6 @@ public class SignInActivity extends AppCompatActivity {
             }
         }
 
-        // Create notification channel for Android 8.0 and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
@@ -119,32 +118,25 @@ public class SignInActivity extends AppCompatActivity {
             );
             channel.setDescription("Welcome messages when you log in");
             channel.enableLights(true);
-            channel.setLightColor(0xFF00FF00); // Green light color
+            channel.setLightColor(0xFF00FF00);
             channel.enableVibration(true);
             channel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
+            if (manager != null) manager.createNotificationChannel(channel);
         }
 
-        // Create notification intent
-        Intent notificationIntent = new Intent(this, SignInActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        Intent notifIntent = new Intent(this, SignInActivity.class);
+        notifIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(
-                this,
-                0,
-                notificationIntent,
+                this, 0, notifIntent,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT
         );
-        // Create notification
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.logo_transparent)
                 .setContentText("Severance reconnected. Welcome back, " + name + ".")
-
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("The culinary matrix awaits your command, " + name + ".")
-                )
+                        .bigText("The culinary matrix awaits your command, " + name + "."))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setAutoCancel(true)
@@ -155,25 +147,17 @@ public class SignInActivity extends AppCompatActivity {
                 .setWhen(System.currentTimeMillis())
                 .setContentIntent(pendingIntent);
 
-
-
-        // Show notification
-        if (notificationManager != null) {
-            try {
-                notificationManager.notify(NOTIFICATION_ID, builder.build());
-            } catch (SecurityException e) {
-                Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, "Failed to initialize notification manager", Toast.LENGTH_SHORT).show();
+        try {
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
+        } catch (SecurityException e) {
+            Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void loginUser() {
-        String email = emailField.getText().toString().trim();
+        String email    = emailField.getText().toString().trim();
         String password = passwordField.getText().toString().trim();
 
-        // Field validation
         boolean hasError = false;
         if (email.isEmpty()) {
             emailField.setError("Email is required");
@@ -187,7 +171,7 @@ public class SignInActivity extends AppCompatActivity {
 
         new Thread(() -> {
             try {
-                URL url = new URL("https://lamp.ms.wits.ac.za/home/s2801261/login.php");
+                URL url = new URL("https://lamp.ms.wits.ac.za/home/s2801261/login2.php");
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
@@ -205,51 +189,52 @@ public class SignInActivity extends AppCompatActivity {
                 input.close();
 
                 JSONArray jsonArray = new JSONArray(response.toString());
-                JSONObject json = jsonArray.getJSONObject(0);
+                JSONObject json    = jsonArray.getJSONObject(0);
 
                 runOnUiThread(() -> {
                     try {
                         if (json.getBoolean("success")) {
                             String name = json.getString("name");
+                            int userId = json.getInt("user_id");
+                            String role = json.getString("role");
+                            int restaurantId = json.getInt("restaurant_id"); // ← parsed from PHP
 
-                            // Show welcome notification
+                            // Show notification
                             showWelcomeNotification(name);
 
                             Toast.makeText(this, "Login Successful!! Welcome " + name, Toast.LENGTH_LONG).show();
 
-                            // Extract values
-                            int userId = json.getInt("user_id");
-                            String role = json.getString("role");
-
-                            // Save into SharedPreferences
                             SharedPreferences globalPrefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-                            SharedPreferences.Editor globalEditor = globalPrefs.edit();
-                            globalEditor.putString("staff_name", name);
-                            globalEditor.putInt("user_id", userId);
-                            globalEditor.apply();
+                            SharedPreferences.Editor editor = globalPrefs.edit();
+                            editor.putString("staff_name", name);
+                            editor.putInt("user_id", userId);
+                            editor.putInt("restaurant_id", restaurantId);
+                            editor.apply();
 
                             Intent intent;
-                            if (role.equals("staff")) {
+                            if ("staff".equals(role)) {
                                 intent = new Intent(SignInActivity.this, StaffMenuActivity.class);
-                                intent.putExtra("staff_name", name);
+                                intent.putExtra("staff_name",    name);
+                                intent.putExtra("restaurant_id", restaurantId);  // ← added
                             } else {
-                                globalEditor.putString("customer_name", name);
-                                globalEditor.apply();
+                                editor.putString("customer_name", name);
+                                editor.apply();
                                 intent = new Intent(SignInActivity.this, CustomerActivity.class);
                                 intent.putExtra("customer_name", name);
                             }
 
-                            // Remember-me prefs
-                            SharedPreferences.Editor editor = getSharedPreferences("loginPrefs", MODE_PRIVATE).edit();
+                            // Remember-me
+                            SharedPreferences loginPrefs = getSharedPreferences("loginPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor loginEditor = loginPrefs.edit();
                             CheckBox rememberMe = findViewById(R.id.cbRememberMe);
                             if (rememberMe.isChecked()) {
-                                editor.putBoolean("rememberMe", true);
-                                editor.putString("email", email);
-                                editor.putString("password", password);
+                                loginEditor.putBoolean("rememberMe", true);
+                                loginEditor.putString("email", email);
+                                loginEditor.putString("password", password);
                             } else {
-                                editor.clear();
+                                loginEditor.clear();
                             }
-                            editor.apply();
+                            loginEditor.apply();
 
                             startActivity(intent);
                         } else {
@@ -262,7 +247,9 @@ public class SignInActivity extends AppCompatActivity {
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show());
+                runOnUiThread(() ->
+                        Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show()
+                );
             }
         }).start();
     }
