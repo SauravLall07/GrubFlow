@@ -120,7 +120,6 @@ public class SignInActivity extends AppCompatActivity {
             channel.enableLights(true);
             channel.setLightColor(0xFF00FF00);
             channel.enableVibration(true);
-            channel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) manager.createNotificationChannel(channel);
         }
