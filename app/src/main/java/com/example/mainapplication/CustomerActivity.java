@@ -60,6 +60,11 @@ public class CustomerActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             }
+            else if (item.getItemId() == R.id.nav_about) {
+                Intent intent = new Intent(this, AboutUsActivity.class);
+                startActivity(intent);
+                return true;
+            }
             return false;
         });
 

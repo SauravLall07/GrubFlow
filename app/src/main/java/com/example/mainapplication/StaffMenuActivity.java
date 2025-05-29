@@ -94,6 +94,10 @@ public class StaffMenuActivity extends AppCompatActivity {
                 logout();
                 return true;
             }
+            else if (item.getItemId() == R.id.nav_about) {
+                about();
+                return true;
+            }
             return false;
         });
 
@@ -289,6 +293,10 @@ public class StaffMenuActivity extends AppCompatActivity {
     private void logout() {
         Intent intent = new Intent(this, SignInActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+    private void about() {
+        Intent intent = new Intent(this, AboutUsActivity.class);
         startActivity(intent);
     }
 }
