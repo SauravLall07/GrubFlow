@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Status:"
-            android:textColor="@android:color/white"
+            android:textColor="@color/teal"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginBottom="6dp" />
@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Paid: No"
-            android:textColor="@android:color/white"
+            android:textColor="@color/teal"
             android:textSize="18sp"
             android:textStyle="bold" />
 

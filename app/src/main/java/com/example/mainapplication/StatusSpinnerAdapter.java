@@ -1,4 +1,4 @@
-package com.yourpackage.name;
+package com.example.mainapplication;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -26,11 +26,7 @@ public class StatusSpinnerAdapter extends ArrayAdapter<String> {
 
         // Default colors for different statuses
         this.colors = new HashMap<>();
-        this.colors.put("Pending", Color.parseColor("#008080"));
-        this.colors.put("Preparing", Color.parseColor("#008080"));
-        this.colors.put("Ready", Color.parseColor("#008080"));
-        this.colors.put("Delivered", Color.parseColor("#008080"));
-        this.colors.put("Cancelled", Color.parseColor("#008080"));
+
     }
 
     @Override

@@ -28,7 +28,7 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
 
     private final Context context;
     private List<Order> orders = new ArrayList<>();
-    private final List<String> statusOptions = List.of("Pending", "Preparing", "Ready", "Delivered", "Cancelled");
+    private final List<String> statusOptions = List.of("Pending", "Ready", "Collected");
 
     public StaffOrderAdapter(Context context) {
         this.context = context;
@@ -74,7 +74,7 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
             tvRestaurant.setText("Restaurant: " + order.getRestaurantName());
             tvDetails.setText(order.getDetails());
 
-            com.yourpackage.name.StatusSpinnerAdapter adapter = new com.yourpackage.name.StatusSpinnerAdapter(context, android.R.layout.simple_spinner_item, statusOptions);
+            StatusSpinnerAdapter adapter = new StatusSpinnerAdapter(context, android.R.layout.simple_spinner_item, statusOptions);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerStatus.setAdapter(adapter);
 
