@@ -1,13 +1,16 @@
 package com.example.mainapplication;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +28,7 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
 
     private final Context context;
     private List<Order> orders = new ArrayList<>();
+    private final List<String> statusOptions = List.of("Pending", "Preparing", "Ready", "Delivered", "Cancelled");
 
     public StaffOrderAdapter(Context context) {
         this.context = context;
@@ -44,8 +48,7 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull StaffOrderAdapter.ViewHolder holder, int position) {
-        Order order = orders.get(position);
-        holder.bind(order);
+        holder.bind(orders.get(position));
     }
 
     @Override
@@ -71,16 +74,14 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
             tvRestaurant.setText("Restaurant: " + order.getRestaurantName());
             tvDetails.setText(order.getDetails());
 
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                    context,
-                    R.array.order_status_options,
-                    android.R.layout.simple_spinner_item
-            );
+            com.yourpackage.name.StatusSpinnerAdapter adapter = new com.yourpackage.name.StatusSpinnerAdapter(context, android.R.layout.simple_spinner_item, statusOptions);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinnerStatus.setAdapter(adapter);
 
-            int selectedPosition = adapter.getPosition(order.getStatus());
-            spinnerStatus.setSelection(selectedPosition);
+            int selectedPosition = statusOptions.indexOf(order.getStatus());
+            if (selectedPosition >= 0) {
+                spinnerStatus.setSelection(selectedPosition);
+            }
 
             updatePaidText(order.isPaid());
 
@@ -99,7 +100,6 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
 
                 @Override
                 public void onNothingSelected(android.widget.AdapterView<?> parent) {
-                    // Do nothing
                 }
             });
         }
@@ -109,7 +109,7 @@ public class StaffOrderAdapter extends RecyclerView.Adapter<StaffOrderAdapter.Vi
         }
 
         private void updateOrderStatusOnServer(Order order) {
-            String url = "https://lamp.ms.wits.ac.za/home/s2801261/updatestatus.php"; // Replace with actual server URL
+            String url = "https://lamp.ms.wits.ac.za/home/s2801261/updatestatus.php";
 
             StringRequest request = new StringRequest(Request.Method.POST, url,
                     response -> Log.d("UpdateOrder", "Response: " + response),

@@ -56,14 +56,13 @@
             android:textStyle="bold"
             android:layout_marginBottom="6dp" />
 
-        <!-- Status spinner with improved styling -->
+        <!-- Custom styled spinner -->
         <Spinner
             android:id="@+id/spinnerStatus"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:backgroundTint="@color/teal"
+            android:background="@drawable/spinner_background"
             android:popupBackground="@color/grey"
-            android:textColor="@color/dark_grey"
             android:layout_marginBottom="10dp"
             android:paddingStart="12dp"
             android:paddingEnd="12dp" />
