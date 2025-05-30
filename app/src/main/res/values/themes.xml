@@ -1,25 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base theme -->
+
+    <!-- Base App Theme for Light Mode -->
     <style name="Base.Theme.MainApplication" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorControlActivated">@color/grey</item>
         <item name="android:statusBarColor">@color/dark_grey</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
-    <!-- App theme -->
-    <style name="Theme.MainApplication" parent="Base.Theme.MainApplication">
+    <!-- SPLASH THEME for Light Mode -->
+    <style name="Theme.MainApplication" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/dark_grey</item>
         <item name="android:statusBarColor">@color/dark_grey</item>
         <item name="android:navigationBarColor">@color/dark_grey</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
-
     <!-- Splash screen only -->
     <style name="Theme.MainApplication.Splash" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowBackground">@color/dark_grey</item>
         <item name="android:statusBarColor">@color/dark_grey</item>
         <item name="android:navigationBarColor">@color/dark_grey</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowIsTranslucent">true</item> <!-- 👈 Here only -->
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>
