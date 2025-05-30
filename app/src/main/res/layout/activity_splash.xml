@@ -14,7 +14,7 @@
         android:layout_centerInParent="true"
         android:scaleType="fitCenter" />
 
-    <!-- Footer Text at Bottom -->
+    <!-- Footer Text -->
     <TextView
         android:id="@+id/splash_footer"
         android:layout_width="wrap_content"

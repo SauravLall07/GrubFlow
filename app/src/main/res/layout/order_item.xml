@@ -57,13 +57,13 @@
             android:textStyle="bold"
             android:layout_marginBottom="6dp" />
 
-        <!-- Payment status and thumbs buttons on the same line -->
+        <!-- Payment status and thumbs buttons -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp">
 
-            <!-- Payment status with larger text -->
+            <!-- Payment status -->
             <TextView
                 android:id="@+id/tvPaid"
                 android:layout_width="wrap_content"
@@ -74,7 +74,7 @@
                 android:textColor="@color/burgundy"
                 android:textSize="18sp" />
 
-            <!-- Thumbs buttons on the right -->
+            <!-- Thumbs buttons -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
