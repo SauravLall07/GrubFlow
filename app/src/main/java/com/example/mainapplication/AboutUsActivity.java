@@ -3,6 +3,8 @@ package com.example.mainapplication;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.card.MaterialCardView;
 
@@ -21,19 +23,53 @@ public class AboutUsActivity extends AppCompatActivity {
         emailCard = findViewById(R.id.email_card);
         phoneCard = findViewById(R.id.phone_card);
 
-        // Set up click listeners for contact cards
+        TextView message = findViewById(R.id.member_names);
+        TextView message2 = findViewById(R.id.phone_text);
+        TextView message3 = findViewById(R.id.member);
+        TextView message4 = findViewById(R.id.meber_nam3);
+
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(v.getContext(), "Mesh!, Bring lozenges", Toast.LENGTH_SHORT).show();
+            }
+        });
+        message2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(v.getContext(), "Nein", Toast.LENGTH_SHORT).show();
+            }
+        });
+        message3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(v.getContext(), "Plowing mech", Toast.LENGTH_SHORT).show();
+            }
+        });
+        message4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(v.getContext(), "Aight", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         setupContactCardListeners();
     }
 
     private void setupContactCardListeners() {
-        // Email card click listener
+
         emailCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
         });
 
-        // Phone card click listener
+
         phoneCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,12 +77,12 @@ public class AboutUsActivity extends AppCompatActivity {
         });
     }
 
-    // Method to update mission text dynamically
+
     public void updateMissionText(String newMission) {
         missionText.setText(newMission);
     }
 
-    // Method to update contact information
+
     public void updateContactInfo(String email, String phone) {
         TextView emailTextView = findViewById(R.id.email_text);
         TextView phoneTextView = findViewById(R.id.phone_text);
