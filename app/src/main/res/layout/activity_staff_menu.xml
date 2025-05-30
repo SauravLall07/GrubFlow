@@ -18,7 +18,7 @@
             android:id="@+id/mainOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/wallpaper4">
+            android:background="@drawable/wallpaper3">
 
             <!-- Toolbar -->
             <androidx.appcompat.widget.Toolbar

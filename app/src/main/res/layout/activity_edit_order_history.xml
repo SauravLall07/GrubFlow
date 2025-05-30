@@ -10,9 +10,21 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/wallpaper4"
+        android:background="@drawable/wallpaper3"
         android:id="@+id/orderHistoryContentLayout"
         android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            app:tint="@color/teal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Logo -->
         <ImageView
@@ -24,7 +36,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
-        
+
         <!-- Customer Name -->
         <TextView
             android:id="@+id/tvCustomerName"

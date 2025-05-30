@@ -5,7 +5,7 @@
     android:id="@+id/tvRegister"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/wallpaper4"
+    android:background="@drawable/wallpaper3"
     tools:context=".RegisterActivity">
 
     <!-- App Logo -->

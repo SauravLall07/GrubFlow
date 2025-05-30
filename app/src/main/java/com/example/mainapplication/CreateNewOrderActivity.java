@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
@@ -62,6 +63,9 @@ public class CreateNewOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_new_order);
+
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         etStaffName = findViewById(R.id.etStaffName);
         etRestaurantName = findViewById(R.id.etRestaurantName);
