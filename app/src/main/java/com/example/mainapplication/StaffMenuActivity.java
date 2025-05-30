@@ -218,7 +218,7 @@ public class StaffMenuActivity extends AppCompatActivity {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://lamp.ms.wits.ac.za/home/s2801261/testcustomerorders2.php")
+                .url("https://lamp.ms.wits.ac.za/home/s2801261/customer_orders.php")
                 .post(formBody)
                 .build();
 

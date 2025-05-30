@@ -171,7 +171,7 @@ public class SignInActivity extends AppCompatActivity {
 
         new Thread(() -> {
             try {
-                URL url = new URL("https://lamp.ms.wits.ac.za/home/s2801261/login2.php");
+                URL url = new URL("https://lamp.ms.wits.ac.za/home/s2801261/login.php");
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
