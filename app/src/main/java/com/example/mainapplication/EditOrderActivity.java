@@ -19,7 +19,7 @@ public class EditOrderActivity extends AppCompatActivity {
 
     private TextView tvCustomerName, tvOrderHistory;
     private RecyclerView rvOrders;
-    private StaffOrderAdapter staffOrderAdapter;  // fix variable name to camelCase
+    private StaffOrderAdapter staffOrderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,8 @@ public class EditOrderActivity extends AppCompatActivity {
 
         // Setup RecyclerView and Adapter
         rvOrders.setLayoutManager(new LinearLayoutManager(this));
-        staffOrderAdapter = new StaffOrderAdapter(this);  // instantiate the correct adapter
-        rvOrders.setAdapter(staffOrderAdapter);           // set correct adapter
+        staffOrderAdapter = new StaffOrderAdapter(this);
+        rvOrders.setAdapter(staffOrderAdapter);
 
         // Parse and load orders
         List<Order> orders = parseOrdersFromJson(ordersJson, customerName);
@@ -61,7 +61,7 @@ public class EditOrderActivity extends AppCompatActivity {
         } else {
             tvOrderHistory.setVisibility(View.GONE);
             rvOrders.setVisibility(View.VISIBLE);
-            staffOrderAdapter.setOrders(orders);          // use correct adapter instance here
+            staffOrderAdapter.setOrders(orders);
         }
     }
 

@@ -57,10 +57,8 @@ public class StaffMenuActivity extends AppCompatActivity {
     private String staffName;
     private int restaurantId;
 
-    // Cache last search result for dropdown to show on click
     private List<User> currentUserList = new ArrayList<>();
 
-    // Flag to detect programmatic text change
     private boolean isProgrammaticTextChange = false;
 
     @Override
@@ -68,7 +66,6 @@ public class StaffMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_staff_menu);
 
-        // Read staff name & restaurantId from Intent
         staffName    = getIntent().getStringExtra("staff_name");
         restaurantId = getIntent().getIntExtra("restaurant_id", -1);
 
@@ -101,7 +98,6 @@ public class StaffMenuActivity extends AppCompatActivity {
             return false;
         });
 
-        // Show staff name in header
         View headerView = navigationView.getHeaderView(0);
         TextView tvMemberName = headerView.findViewById(R.id.tvMemberName);
         tvMemberName.setText(staffName != null && !staffName.isEmpty() ? staffName : "Staff");

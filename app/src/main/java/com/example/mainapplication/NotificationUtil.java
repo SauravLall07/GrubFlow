@@ -17,7 +17,6 @@ public class NotificationUtil {
     private static final int NOTIFICATION_ID = 1001;
 
     public static boolean showWelcomeNotification(Context context, String customerName) {
-        // Check if notification permission is granted
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -26,7 +25,6 @@ public class NotificationUtil {
         }
 
         try {
-            // Create notification channel for Android 8.0 and above
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 createNotificationChannel(context);
             }
@@ -44,7 +42,6 @@ public class NotificationUtil {
             notificationManager.notify(NOTIFICATION_ID, builder.build());
             return true;
         } catch (SecurityException e) {
-            // Handle the case where notifications are disabled
             return false;
         }
     }

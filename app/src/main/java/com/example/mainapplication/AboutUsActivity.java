@@ -30,7 +30,6 @@ public class AboutUsActivity extends AppCompatActivity {
         emailCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle email click - you can add email intent here
             }
         });
 
@@ -38,7 +37,6 @@ public class AboutUsActivity extends AppCompatActivity {
         phoneCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle phone click - you can add phone intent here
             }
         });
     }

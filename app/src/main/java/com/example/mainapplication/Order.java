@@ -3,11 +3,11 @@ package com.example.mainapplication;
 public class Order {
     private String orderId;
     private String restaurantName;
-    private String details;         // Example: "Burger (2), Chips (1)"
-    private String status;          // e.g. "Pending", "Delivered"
+    private String details;
+    private String status;
     private boolean isPaid;
-    private String time;            // e.g. "2024-05-27 18:30"
-    private int rating;             // 1 to 5
+    private String time;
+    private int rating;
     private boolean isRated;
     private String customerName;
 

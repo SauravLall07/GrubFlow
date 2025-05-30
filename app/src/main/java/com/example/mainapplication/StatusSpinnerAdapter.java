@@ -22,7 +22,6 @@ public class StatusSpinnerAdapter extends ArrayAdapter<String> {
         super(context, resource, items);
         this.items = items;
 
-        // Default colors for different statuses
         this.colors = new HashMap<>();
 
     }

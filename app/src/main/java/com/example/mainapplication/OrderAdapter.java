@@ -38,7 +38,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
 
     public void setOrders(List<Order> orders) {
         this.orderList = orders != null ? orders : new ArrayList<>();
-        Log.d("OrderAdapter", "Orders set: " + this.orderList.size());  // Debug log
+        Log.d("OrderAdapter", "Orders set: " + this.orderList.size());
         notifyDataSetChanged();
     }
 
@@ -128,7 +128,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                     ((android.app.Activity) context).runOnUiThread(() -> {
                         if (finalSuccess) {
                             order.setRated(true);
-                            notifyItemChanged(position); // triggers rebind which hides thumbs
+                            notifyItemChanged(position);
                             Toast.makeText(context, "Rating submitted!", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(context, "Rating failed!", Toast.LENGTH_SHORT).show();

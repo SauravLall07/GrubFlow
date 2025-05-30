@@ -18,10 +18,9 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                // Start the main activity
                 Intent mainIntent = new Intent(SplashActivity.this, SignInActivity.class);
                 startActivity(mainIntent);
-                finish(); // Close the splash activity
+                finish();
             }
         }, SPLASH_SCREEN_DURATION);
     }

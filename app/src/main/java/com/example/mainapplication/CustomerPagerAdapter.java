@@ -16,9 +16,9 @@ public class CustomerPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new OrderHistoryFragment(); // OrderHistory will fetch its own data
+                return new OrderHistoryFragment();
             case 1:
-                return RestaurantsFragment.newInstance(); // Static method for creating fragment
+                return RestaurantsFragment.newInstance();
             default:
                 throw new IllegalArgumentException("Invalid position: " + position);
         }
