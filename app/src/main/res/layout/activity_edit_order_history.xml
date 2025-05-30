@@ -16,10 +16,10 @@
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="0dp"
+            android:layout_height="25dp"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="0dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_arrow_back"
             app:tint="@color/teal"
