@@ -11,9 +11,6 @@ GrubFlow is an Android application designed for food ordering and restaurant man
 - **Order History**: View and edit past orders.
 - **About Us**: Information about the application and its creators.
 
-## Screenshots
-
-*(Add screenshots here if available)*
 
 ## Prerequisites
 
@@ -49,15 +46,3 @@ The app uses the following key libraries:
 - `app/src/main/res/`: Resources (layouts, drawables, values)
 - `app/src/androidTest/`: Instrumentation tests
 - `app/src/test/`: Unit tests
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For questions or support, please contact the development team.
